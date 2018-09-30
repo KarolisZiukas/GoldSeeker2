@@ -14,13 +14,13 @@ abstract class BaseRecyclerAdapter : RecyclerView.Adapter<BaseRecyclerAdapter.Re
             RecyclerViewHolder(DataBindingUtil.inflate<ViewDataBinding>(LayoutInflater.from(parent.context), viewType, parent, false))
 
     override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
-//        getViewModel(position)
-//                ?.let {
-//                    val bindingSuccess = holder.binding.setVariable(BR.viewModel, it)
-//                    if (!bindingSuccess) {
-//                        throw IllegalStateException("Binding ${holder.binding} viewModel variable name should be 'viewModel'")
-//                    }
-//                }
+        getViewModel(position)
+                ?.let {
+                    val bindingSuccess = holder.binding.setVariable(BR.viewModel, it)
+                    if (!bindingSuccess) {
+                        throw IllegalStateException("Binding ${holder.binding} viewModel variable name should be 'viewModel'")
+                    }
+                }
     }
 
     override fun getItemViewType(position: Int) = getLayoutIdForPosition(position)

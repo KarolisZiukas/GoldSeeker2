@@ -24,7 +24,7 @@ class AddNewItemsActivity : BaseActivity(), AddNewItemsNavigator {
         }
   }
 
-  fun obtainViewModel(): AddNewItemsViewModel {
+  override fun obtainViewModel(): AddNewItemsViewModel {
     viewModel = ViewModelProviders.of(this, customViewModelFactory)
         .get(AddNewItemsViewModel::class.java)
     viewModel.setNavigator(this)
