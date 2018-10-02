@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "487192074607",
+    "firebase_url": "https://gold-seeker.firebaseio.com",
+    "project_id": "gold-seeker",
+    "storage_bucket": "gold-seeker.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:487192074607:android:1d907a75eedc57ed",
+        "android_client_info": {
+          "package_name": "com.example.bd0631.goldseeker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "487192074607-e96sjue4f7hjni3is6g0t345oghuusjd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfYUMrig4U6aR4S4_aFm__gsU5O7scrRk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

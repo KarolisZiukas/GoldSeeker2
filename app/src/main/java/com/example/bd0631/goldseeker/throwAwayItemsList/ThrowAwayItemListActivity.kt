@@ -31,7 +31,7 @@ class ThrowAwayItemListActivity: BaseActivity(), ThrowAwayItemListNavigator {
 
   override fun onAddNewItemClicked() {
     val intent = Intent(this, AddNewItemsActivity::class.java)
-    startActivity(intent)
+    startActivityForResult(intent, AddNewItemsActivity.REQUEST_CODE)
   }
 
   override fun obtainViewModel(): ViewModel {
@@ -40,5 +40,10 @@ class ThrowAwayItemListActivity: BaseActivity(), ThrowAwayItemListNavigator {
     viewModel.setNavigator(this)
     return viewModel
 
+  }
+
+  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    super.onActivityResult(requestCode, resultCode, data)
+    viewModel.loadThrowAwayItem()
   }
 }

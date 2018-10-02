@@ -17,6 +17,7 @@
     <EditText
         android:id="@+id/et_address"
         android:layout_width="0dp"
+        android:text="@={viewModel.locationName}"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -26,9 +27,20 @@
         android:id="@+id/et_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:text="@={viewModel.warehouseName}"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/et_address"/>
+
+    <EditText
+        android:id="@+id/et_items_list"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@={viewModel.itemsList}"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_name"
+        />
 
     <Button
         android:id="@+id/bt_add_items"

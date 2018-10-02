@@ -1,6 +1,5 @@
 package com.example.bd0631.goldseeker.additems
 
-import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -9,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.bd0631.goldseeker.R
 import com.example.bd0631.goldseeker.databinding.FragmentAddNewItemsBinding
-import kotlinx.android.synthetic.main.activity_throw_away_items_list.view.*
 
 class AddNewItemsFragment: Fragment(){
 

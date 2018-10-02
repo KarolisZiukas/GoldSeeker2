@@ -10,19 +10,20 @@ import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
 
 @Singleton
-@Component (modules = [
-    (AppModule::class),
-    (RoomModule::class),
-    (AndroidSupportInjectionModule::class),
-    (ActivityModule::class)])
-interface MainComponent: AndroidInjector<GoldApplication> {
+@Component(modules = [
+  (AppModule::class),
+  (RoomModule::class),
+  (FireStorageModule::class),
+  (AndroidSupportInjectionModule::class),
+  (ActivityModule::class)])
+interface MainComponent : AndroidInjector<GoldApplication> {
 
-    @Component.Builder
-    interface Builder {
+  @Component.Builder
+  interface Builder {
 
-        @BindsInstance
-        fun application(application: Application): MainComponent.Builder
+    @BindsInstance
+    fun application(application: Application): MainComponent.Builder
 
-        fun build(): MainComponent
-    }
+    fun build(): MainComponent
+  }
 }

@@ -14,10 +14,8 @@ import com.example.bd0631.goldseeker.R
 import com.example.bd0631.goldseeker.additems.AddNewItemsActivity
 import com.example.bd0631.goldseeker.database.PickUpLocation
 import com.example.bd0631.goldseeker.databinding.FragmentThrowAwayItemsListBinding
-import kotlinx.android.synthetic.main.activity_throw_away_items_list.view.*
 
 class ThrowAwayItemListFragment : Fragment() {
-
 
   private lateinit var databinding: FragmentThrowAwayItemsListBinding
 
@@ -47,7 +45,6 @@ class ThrowAwayItemListFragment : Fragment() {
 
   }
 
-
   private fun startAddNewThrowAwayItemsActivity() {
     val intent = Intent(activity, AddNewItemsActivity::class.java)
     startActivityForResult(intent, 1)
@@ -61,9 +58,9 @@ class ThrowAwayItemListFragment : Fragment() {
     recyclerView.adapter = adapter
     viewModel.getThrowAwayItem()?.observe(this, Observer<List<PickUpLocation>> {
       adapter.updateData(it!!)
+      adapter.notifyDataSetChanged()
     })
   }
-
 
   companion object {
 

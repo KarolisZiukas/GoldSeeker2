@@ -6,6 +6,7 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-kapt'
 
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 28
@@ -109,5 +110,8 @@ dependencies {
 
         implementation 'com.airbnb.android:lottie:2.5.5'
 
+        implementation 'com.google.firebase:firebase-core:16.0.1'
+
+        implementation 'com.google.firebase:firebase-firestore:17.1.0'
     }
 }

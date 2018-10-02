@@ -37,6 +37,8 @@ class AddNewItemsActivity : BaseActivity(), AddNewItemsNavigator {
   }
 
   companion object {
+    const val REQUEST_CODE = 1
+
     const val ADD_RESULT_OK = RESULT_FIRST_USER + 1
   }
 }

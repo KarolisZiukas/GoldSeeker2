@@ -6,23 +6,23 @@ import android.arch.lifecycle.ViewModel
 import android.util.Log
 import com.example.bd0631.goldseeker.database.PickUpLacationsRepo
 import com.example.bd0631.goldseeker.database.PickUpLocation
+import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class ThrowAwayItemListViewModel @Inject constructor(val pickUpLacationsRepo: PickUpLacationsRepo) : ViewModel() {
-
+class ThrowAwayItemListViewModel @Inject constructor(
+    val pickUpLacationsRepo: PickUpLacationsRepo) : ViewModel() {
 
   private lateinit var navigator: ThrowAwayItemListNavigator
 
-  private var throwAwayItemsList :MutableLiveData<List<PickUpLocation>>? = null
+  private var throwAwayItemsList: MutableLiveData<List<PickUpLocation>>? = null
 
   fun onAddNewItemsClicked() {
-      navigator.onAddNewItemClicked()
+    navigator.onAddNewItemClicked()
   }
-
 
   fun setNavigator(navigator: ThrowAwayItemListNavigator) {
     this.navigator = navigator
@@ -35,6 +35,20 @@ class ThrowAwayItemListViewModel @Inject constructor(val pickUpLacationsRepo: Pi
     }
     return throwAwayItemsList
   }
+
+//  fun loadThrowAwayItemsFromRemote() {
+//    FirebaseFirestore.getInstance()
+//        .collection("users")
+//        .get()
+//        .addOnSuccessListener {
+//          if (!it.isEmpty) {
+//            throwAwayItemsList = it.toObjects(PickUpLocation::class.java)
+//                as MutableLiveData<List<PickUpLocation>>?
+//            Log.d("AAA", "ASdasf")
+//          } else {
+//          }
+//        }
+//  }
 
   fun loadThrowAwayItem() {
     pickUpLacationsRepo.getAllPickUpLocations()
