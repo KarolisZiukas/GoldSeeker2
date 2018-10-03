@@ -2,6 +2,7 @@ package com.example.bd0631.goldseeker.additems
 
 import android.arch.lifecycle.ViewModel
 import android.databinding.ObservableField
+import android.graphics.Bitmap
 import android.util.Log
 import com.example.bd0631.goldseeker.database.PickUpLacationsRepo
 import com.example.bd0631.goldseeker.database.PickUpLocation
@@ -17,14 +18,15 @@ import javax.inject.Inject
 class AddNewItemsViewModel @Inject constructor(
     val pickUpLocationsRepo: PickUpLacationsRepo) : ViewModel() {
 
-  lateinit var addNewItemsNavigator: AddNewItemsNavigator
+  private lateinit var navigator: AddNewItemsNavigator
 
   val locationName = ObservableField<String>()
   val warehouseName = ObservableField<String>()
   val itemsList = ObservableField<String>()
+  val itemImage = ObservableField<Bitmap>()
 
   fun setNavigator(addNewItemsNavigator: AddNewItemsNavigator) {
-    this.addNewItemsNavigator = addNewItemsNavigator
+    this.navigator = addNewItemsNavigator
   }
 
   //Todo Fix remote
@@ -58,7 +60,7 @@ class AddNewItemsViewModel @Inject constructor(
         .subscribeOn(Schedulers.newThread())
         .subscribe(object : CompletableObserver {
           override fun onComplete() {
-            addNewItemsNavigator.onNewPickUpItemSaved()
+            navigator.onNewPickUpItemSaved()
           }
 
           override fun onSubscribe(d: Disposable) {
@@ -68,6 +70,10 @@ class AddNewItemsViewModel @Inject constructor(
             Log.d("SAVING ERROR", e.message)
           }
         })
+  }
+
+  fun addPicture() {
+    navigator.onAddPictureClicked()
   }
 
   fun saveThrowAwayItems() {
