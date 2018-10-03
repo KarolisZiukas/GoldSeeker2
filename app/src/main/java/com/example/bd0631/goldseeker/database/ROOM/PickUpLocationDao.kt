@@ -9,7 +9,7 @@ import io.reactivex.Single
 @Dao
 interface PickUpLocationDao {
 
-  @Query("SELECT * FROM pickUpLocations")
+  @Query("SELECT * FROM pickUpLocations ORDER BY id")
   fun getPickUpLocations(): Single<List<PickUpLocation>>
 
   @Insert

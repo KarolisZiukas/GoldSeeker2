@@ -1,15 +1,18 @@
 package com.example.bd0631.goldseeker.maps
 
-import android.support.v7.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
+import android.support.v4.view.GravityCompat
+import android.support.v7.app.AppCompatActivity
 import com.example.bd0631.goldseeker.R
-
+import com.example.bd0631.goldseeker.throwAwayItemsList.ThrowAwayItemListActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.android.synthetic.main.activity_throw_away_items_list.*
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -22,6 +25,25 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     val mapFragment = supportFragmentManager
         .findFragmentById(R.id.map) as SupportMapFragment
     mapFragment.getMapAsync(this)
+    setUpNavigationDrawer()
+  }
+
+  private fun setUpNavigationDrawer() {
+    nav_view.setNavigationItemSelectedListener {
+      when (it.itemId) {
+        R.id.item_throw_away_items_list -> {
+          val intent = Intent(this, ThrowAwayItemListActivity::class.java)
+          startActivity(intent)
+        }
+        R.id.item_map -> {
+          val intent = Intent(this, MapsActivity::class.java)
+          startActivity(intent)
+        }
+      }
+      it.isChecked = true
+      drawer_layout.closeDrawer(GravityCompat.START)
+      true
+    }
   }
 
   /**

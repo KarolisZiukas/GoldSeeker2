@@ -16,6 +16,12 @@ import dagger.android.HasActivityInjector;
 
 public class GoldApplication extends DaggerApplication implements HasActivityInjector {
 
+    //Todo clean UP!!!!
+    //Todo Database
+    //Todo screens
+    //Todo photos
+    //Todo Maps
+    //Todo 4 screens
     @Inject DispatchingAndroidInjector<Fragment> fragmentInjector;
 
     @Inject PickUpLacationsRepo pickUpLacationsRepo;
