@@ -54,7 +54,7 @@ class ThrowAwayItemListFragment : Fragment() {
     recyclerView = databinding.rvThrowAwayItemsList
     recyclerView.layoutManager = StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
     recyclerView.setHasFixedSize(true)
-    adapter = ThrowAwayItemListAdapter(ArrayList())
+    adapter = ThrowAwayItemListAdapter(ArrayList(), viewModel.pickUpLacationsRepo)
     recyclerView.adapter = adapter
     viewModel.getThrowAwayItem()?.observe(this, Observer<List<PickUpLocation>> {
       adapter.updateData(it!!)

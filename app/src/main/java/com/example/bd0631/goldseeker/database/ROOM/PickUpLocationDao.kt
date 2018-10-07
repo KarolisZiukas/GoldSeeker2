@@ -14,4 +14,7 @@ interface PickUpLocationDao {
 
   @Insert
   fun insertNewPickUpItems(pickUpLocation: PickUpLocation)
+
+  @Query("DELETE FROM pickUpLocations WHERE id = :id")
+  fun removePickUpLocation(id: Long?)
 }

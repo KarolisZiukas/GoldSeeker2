@@ -17,7 +17,7 @@ import dagger.android.HasActivityInjector;
 public class GoldApplication extends DaggerApplication implements HasActivityInjector {
 
     //Todo clean UP!!!!
-    //Todo Database
+    //Todo Database +
     //Todo screens
     //Todo photos
     //Todo Maps
