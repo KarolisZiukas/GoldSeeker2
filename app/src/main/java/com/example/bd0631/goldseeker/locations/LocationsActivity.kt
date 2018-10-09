@@ -1,30 +1,25 @@
-package com.example.bd0631.goldseeker.maps
+package com.example.bd0631.goldseeker.locations
 
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
 import com.example.bd0631.goldseeker.R
+import com.example.bd0631.goldseeker.replaceFragmentInActivity
 import com.example.bd0631.goldseeker.throwAwayItemsList.ThrowAwayItemListActivity
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.activity_throw_away_items_list.*
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+class LocationsActivity : AppCompatActivity() {
 
-  private lateinit var mMap: GoogleMap
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_maps)
-    // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-    val mapFragment = supportFragmentManager
-        .findFragmentById(R.id.map) as SupportMapFragment
-    mapFragment.getMapAsync(this)
+    setContentView(R.layout.activity_locations)
+
+    supportFragmentManager.findFragmentById(R.id.content_frame)
+        ?: LocationsFragment.newInstance().also {
+          replaceFragmentInActivity(it, R.id.content_frame)
+        }
     setUpNavigationDrawer()
   }
 
@@ -36,7 +31,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
           startActivity(intent)
         }
         R.id.item_map -> {
-          val intent = Intent(this, MapsActivity::class.java)
+          val intent = Intent(this, LocationsActivity::class.java)
           startActivity(intent)
         }
       }
@@ -55,11 +50,5 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
    * it inside the SupportMapFragment. This method will only be triggered once the user has
    * installed Google Play services and returned to the app.
    */
-  override fun onMapReady(googleMap: GoogleMap) {
-    mMap = googleMap
-    // Add a marker in Sydney and move the camera
-    val sydney = LatLng(-34.0, 151.0)
-    mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-    mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
-  }
+
 }

@@ -9,7 +9,7 @@ import com.example.bd0631.goldseeker.CustomViewModelFactory
 import com.example.bd0631.goldseeker.R
 import com.example.bd0631.goldseeker.additems.AddNewItemsActivity
 import com.example.bd0631.goldseeker.base.BaseActivity
-import com.example.bd0631.goldseeker.maps.MapsActivity
+import com.example.bd0631.goldseeker.locations.LocationsActivity
 import com.example.bd0631.goldseeker.replaceFragmentInActivity
 import kotlinx.android.synthetic.main.activity_throw_away_items_list.*
 import javax.inject.Inject
@@ -42,7 +42,7 @@ class ThrowAwayItemListActivity : BaseActivity(), ThrowAwayItemListNavigator {
           startActivity(intent)
         }
         R.id.item_map -> {
-          val intent = Intent(this, MapsActivity::class.java)
+          val intent = Intent(this, LocationsActivity::class.java)
           startActivity(intent)
         }
       }
