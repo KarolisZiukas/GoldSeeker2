@@ -9,16 +9,21 @@ import android.view.ViewGroup
 import com.example.bd0631.goldseeker.R
 import com.example.bd0631.goldseeker.databinding.FragmentAddNewItemsBinding
 
-class AddNewItemsFragment: Fragment(){
+class AddNewItemsFragment: Fragment() {
 
   lateinit var databinding: FragmentAddNewItemsBinding
 
   private lateinit var viewModel: AddNewItemsViewModel
 
+  lateinit var mCurrentPhotoPath: String
+
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
       savedInstanceState: Bundle?): View? {
     super.onCreateView(inflater, container, savedInstanceState)
-    databinding = DataBindingUtil.inflate(inflater, R.layout.fragment_add_new_items, container, false)
+    databinding = DataBindingUtil.inflate(inflater,
+        R.layout.fragment_add_new_items,
+        container,
+        false)
     return databinding.root
   }
 
@@ -31,7 +36,9 @@ class AddNewItemsFragment: Fragment(){
 
   companion object {
     fun newInstance(): AddNewItemsFragment {
-        return AddNewItemsFragment()
+      return AddNewItemsFragment()
     }
   }
+
+
 }

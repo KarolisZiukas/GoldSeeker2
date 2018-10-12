@@ -1,6 +1,7 @@
 package com.example.bd0631.goldseeker.throwAwayItemsList
 
 import android.arch.lifecycle.ViewModel
+import android.graphics.Bitmap
 import com.example.bd0631.goldseeker.database.PickUpLacationsRepo
 import com.example.bd0631.goldseeker.database.PickUpLocation
 import io.reactivex.Completable
@@ -12,6 +13,7 @@ import io.reactivex.schedulers.Schedulers
 class ThrowAwayItemListItemViewModel(
     val pickUpLocation: PickUpLocation?,
     val pickUpLacationsRepo: PickUpLacationsRepo,
+    val imageFile: Bitmap?,
     val throwAwayItemListCallback: ThrowAwayItemListCallback) : ViewModel() {
 
 

@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.example.bd0631.goldseeker.R
 import com.example.bd0631.goldseeker.databinding.FragmentLocationsBinding
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -18,7 +19,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 
 class LocationsFragment : Fragment(), OnMapReadyCallback {
 
-  private lateinit var mMap: GoogleMap
+  private lateinit var map: GoogleMap
   lateinit var databinding: FragmentLocationsBinding
   val isVisible = MutableLiveData<Boolean>()
   var selected = false
@@ -37,41 +38,16 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
     fun newInstance() = LocationsFragment()
   }
 
-  override fun onMapReady(p0: GoogleMap) {
-    mMap = p0
+  override fun onMapReady(googleMap: GoogleMap) {
+    map = googleMap
     val sydney = LatLng(-34.0, 151.0)
-    mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-    mMap.addMarker(MarkerOptions().position(LatLng(51.1, 10.4)).title("Marker in Sydney"))
-    mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(51.1, 10.4)))
-    mMap.setOnMarkerClickListener {
+    map.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney").snippet("23432432"))
+    map.addMarker(MarkerOptions().position(LatLng(51.1, 10.4)).title("Marker in Sydney"))
+    map.moveCamera(CameraUpdateFactory.newLatLng(LatLng(51.1, 10.4)))
+    map.setOnMarkerClickListener {
+      Toast.makeText(context, it.snippet, Toast.LENGTH_LONG).show()
       isVisible.value = true
-//      if(!selected){
-//        val constraintSet = ConstraintSet()
-//        constraintSet.clone(context, R.layout.fragment_locations_1)
-//        TransitionManager.beginDelayedTransition(v_parent)
-//        constraintSet.applyTo(v_parent)
-//        selected = true
-//      }
-
-//      TransitionManager.beginDelayedTransition(v_details)
-//      with(ConstraintSet()) {
-//        clone(context, R.layout.fragment_locations_1)
-//        applyTo(v_details)
-//      }
       false
     }
   }
-
-//  private fun updateCardInvalidStatus() {
-//    if (isSelectedCardBlacklisted) {
-//      TransitionManager.beginDelayedTransition(w_root)
-//      with(ConstraintSet()) {
-//        clone(context, R.layout.view_card_picker_component)
-//        setVisibility(R.id.tv_invalid, View.VISIBLE)
-//        applyTo(w_root)
-//      }
-//    } else {
-//      tv_invalid.visibility = View.GONE
-//    }
-//  }
 }

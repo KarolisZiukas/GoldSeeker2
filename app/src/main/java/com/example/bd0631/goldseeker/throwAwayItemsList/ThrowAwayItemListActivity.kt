@@ -10,6 +10,7 @@ import com.example.bd0631.goldseeker.R
 import com.example.bd0631.goldseeker.additems.AddNewItemsActivity
 import com.example.bd0631.goldseeker.base.BaseActivity
 import com.example.bd0631.goldseeker.locations.LocationsActivity
+import com.example.bd0631.goldseeker.locations.LocationsFragment
 import com.example.bd0631.goldseeker.replaceFragmentInActivity
 import kotlinx.android.synthetic.main.activity_throw_away_items_list.*
 import javax.inject.Inject

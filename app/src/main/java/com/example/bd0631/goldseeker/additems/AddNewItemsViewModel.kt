@@ -3,6 +3,7 @@ package com.example.bd0631.goldseeker.additems
 import android.arch.lifecycle.ViewModel
 import android.databinding.ObservableField
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import com.example.bd0631.goldseeker.database.PickUpLacationsRepo
 import com.example.bd0631.goldseeker.database.PickUpLocation
@@ -12,6 +13,8 @@ import io.reactivex.CompletableObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import java.io.ByteArrayOutputStream
+import java.io.File
 import javax.inject.Inject
 
 
@@ -24,8 +27,10 @@ class AddNewItemsViewModel @Inject constructor(
   val warehouseName = ObservableField<String>()
   val itemsList = ObservableField<String>()
   val itemImage = ObservableField<Bitmap>()
+  var id: Long = 0
 
   fun setNavigator(addNewItemsNavigator: AddNewItemsNavigator) {
+    id = Generator.generateId()
     this.navigator = addNewItemsNavigator
   }
 
@@ -48,13 +53,15 @@ class AddNewItemsViewModel @Inject constructor(
 //  }
 
   private fun saveThrowAwayItemsLocal() {
+    val stream = ByteArrayOutputStream()
+    itemImage.get()?.compress(Bitmap.CompressFormat.PNG, 100, stream)
     Completable.fromAction {
       pickUpLocationsRepo
-          .insertPickUpLocations(PickUpLocation(Generator.generateId(),
+          .insertPickUpLocations(PickUpLocation(id,
               locationName.get(),
-              warehouseName.get(),
-              itemsList.get()
-          ))
+              warehouseName.get()
+          )
+          )
     }
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeOn(Schedulers.newThread())
@@ -79,5 +86,11 @@ class AddNewItemsViewModel @Inject constructor(
   fun saveThrowAwayItems() {
     saveThrowAwayItemsLocal()
 //    saveThrowAwayItemRemote()
+  }
+
+  fun loadImageFromFile(id: Long, file: File?) {
+    if (file!!.exists()) {
+      itemImage.set(BitmapFactory.decodeFile(file.absolutePath))
+    }
   }
 }

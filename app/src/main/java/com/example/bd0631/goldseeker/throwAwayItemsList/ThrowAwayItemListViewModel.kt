@@ -68,7 +68,6 @@ class ThrowAwayItemListViewModel @Inject constructor(
           }
 
           override fun onError(e: Throwable) {
-            Log.e("LOADING ERROR", e.message)
           }
         })
   }

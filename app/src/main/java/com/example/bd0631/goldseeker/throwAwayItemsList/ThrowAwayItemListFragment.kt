@@ -42,7 +42,6 @@ class ThrowAwayItemListFragment : Fragment() {
     viewModel = (activity as ThrowAwayItemListActivity).obtainViewModel() as ThrowAwayItemListViewModel
     databinding.viewModel = viewModel
     initRecyclerView()
-
   }
 
   private fun startAddNewThrowAwayItemsActivity() {
@@ -54,7 +53,7 @@ class ThrowAwayItemListFragment : Fragment() {
     recyclerView = databinding.rvThrowAwayItemsList
     recyclerView.layoutManager = StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
     recyclerView.setHasFixedSize(true)
-    adapter = ThrowAwayItemListAdapter(ArrayList(), viewModel.pickUpLacationsRepo)
+    adapter = ThrowAwayItemListAdapter(ArrayList(), viewModel.pickUpLacationsRepo, context)
     recyclerView.adapter = adapter
     viewModel.getThrowAwayItem()?.observe(this, Observer<List<PickUpLocation>> {
       adapter.updateData(it!!)

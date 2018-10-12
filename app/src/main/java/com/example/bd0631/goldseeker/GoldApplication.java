@@ -18,7 +18,6 @@ public class GoldApplication extends DaggerApplication implements HasActivityInj
 
     //Todo clean UP!!!!
     //Todo Database +
-    //Todo screens
     //Todo photos
     //Todo Maps
     //Todo 4 screens

@@ -2,13 +2,18 @@ package com.example.bd0631.goldseeker.additems
 
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
-import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.support.v4.content.FileProvider
 import com.example.bd0631.goldseeker.CustomViewModelFactory
 import com.example.bd0631.goldseeker.R
 import com.example.bd0631.goldseeker.base.BaseActivity
 import com.example.bd0631.goldseeker.replaceFragmentInActivity
+import com.example.bd0631.goldseeker.utils.FileCreator
+import com.example.karolis.logginhours.widgets.Generator
+import java.io.File
+import java.io.IOException
 import javax.inject.Inject
 
 class AddNewItemsActivity : BaseActivity(), AddNewItemsNavigator {
@@ -18,9 +23,13 @@ class AddNewItemsActivity : BaseActivity(), AddNewItemsNavigator {
 
   override fun getLayoutId() = R.layout.activity_add_new_items
   private lateinit var viewModel: AddNewItemsViewModel
+  val REQUEST_TAKE_PHOTO = 1
+  var photoFile: File? = null
+  var id: Long = 0
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    id = Generator.generateId()
     supportFragmentManager.findFragmentById(R.id.content_frame)
         ?: AddNewItemsFragment.newInstance().also {
           replaceFragmentInActivity(it, R.id.content_frame)
@@ -48,17 +57,34 @@ class AddNewItemsActivity : BaseActivity(), AddNewItemsNavigator {
   }
 
   override fun onAddPictureClicked() {
+    dispatchTakePictureIntent()
+  }
+
+  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    viewModel.loadImageFromFile(id, photoFile)
+  }
+
+  private fun dispatchTakePictureIntent() {
     Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
       takePictureIntent.resolveActivity(packageManager)?.also {
-        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+        photoFile = try {
+          FileCreator().createImageFile(viewModel.id, this)
+        } catch (ex: IOException) {
+          null
+        }
+        photoFile?.also {
+          val photoURI: Uri = FileProvider.getUriForFile(
+              this,
+              "com.example.android.fileprovider",
+              it
+          )
+          takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+          startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO)
+        }
       }
     }
   }
 
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-      val imageBitmap = data?.extras?.get("data") as Bitmap
-      viewModel.itemImage.set(imageBitmap)
-    }
-  }
+
+
 }
