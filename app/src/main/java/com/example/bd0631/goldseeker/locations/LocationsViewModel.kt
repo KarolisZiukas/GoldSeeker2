@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModel
 import android.content.Context
 import com.example.bd0631.goldseeker.database.PickUpLacationsRepo
 import com.example.bd0631.goldseeker.database.PickUpLocation
+import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -16,14 +17,27 @@ class LocationsViewModel @Inject constructor(
     private val pickUpLacationsRepo: PickUpLacationsRepo
 ) : ViewModel() {
 
-  private var throwAwayItemsList: MutableLiveData<List<PickUpLocation>>? = null
+  var throwAwayItemsList: MutableLiveData<List<PickUpLocation>>? = null
 
   fun getThrowAwayItem(): LiveData<List<PickUpLocation>>? {
+    loadThrowAwayItemsFromRemote()
     if (throwAwayItemsList == null) {
       throwAwayItemsList = MutableLiveData()
       loadThrowAwayItem()
     }
     return throwAwayItemsList
+  }
+
+  private fun loadThrowAwayItemsFromRemote() {
+    FirebaseFirestore.getInstance()
+        .collection("users")
+        .get()
+        .addOnSuccessListener {
+          if (!it.isEmpty) {
+            throwAwayItemsList?.postValue(it.toObjects(PickUpLocation::class.java))
+          } else {
+          }
+        }
   }
 
   fun loadThrowAwayItem() {

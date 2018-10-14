@@ -13,6 +13,7 @@ import com.example.bd0631.goldseeker.database.PickUpLacationsRepo
 import com.example.bd0631.goldseeker.database.PickUpLocation
 import com.example.bd0631.goldseeker.utils.LocationHelper
 import com.example.karolis.logginhours.widgets.Generator
+import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.Completable
 import io.reactivex.CompletableObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -45,23 +46,25 @@ class AddNewItemsViewModel @Inject constructor(
   }
 
 
-  //Todo Fix remote
-//  private fun saveThrowAwayItemRemote() {
-//    val user = HashMap<String, Any>()
-//    user["first"] = "Ada"
-//    user["last"] = "Lovelace"
-//    user["born"] = 1815
-//    val firestore = FirebaseFirestore.getInstance()
-//
-//    firestore.collection("users")
-//        .add(PickUpLocation(Generator.generateId()))
-//        .addOnSuccessListener {
-//          Log.d("SAVED", "DocumentSnapshot added with ID: " + it.id)
-//        }
-//        .addOnFailureListener {
-//          Log.d("FAILED SAVING", "Not added" + it.localizedMessage)
-//        }
-//  }
+  private fun saveThrowAwayItemRemote() {
+    val firestore = FirebaseFirestore.getInstance()
+
+    firestore.collection("users")
+        .add(PickUpLocation(id,
+            locationName.get(),
+            warehouseName.get(),
+            itemsList.get(),
+            54.2142,
+            24.43242
+        ))
+        .addOnSuccessListener {
+          navigator.onNewPickUpItemSaved()
+          Log.d("SAVED", "DocumentSnapshot added with ID: " + it.id)
+        }
+        .addOnFailureListener {
+          Log.d("FAILED SAVING", "Not added" + it.localizedMessage)
+        }
+  }
 
   private fun saveThrowAwayItemsLocal() {
 
@@ -102,7 +105,7 @@ class AddNewItemsViewModel @Inject constructor(
 
   fun saveThrowAwayItems() {
     saveThrowAwayItemsLocal()
-//    saveThrowAwayItemRemote()
+    saveThrowAwayItemRemote()
   }
 
   fun loadImageFromFile(id: Long, file: File?) {

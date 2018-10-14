@@ -19,11 +19,13 @@
         android:layout_width="0dp"
         android:text="@={viewModel.locationName}"
         android:layout_height="wrap_content"
+        android:hint="Enter address"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <EditText
+        android:hint="Enter location name"
         android:id="@+id/et_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -33,6 +35,7 @@
         app:layout_constraintTop_toBottomOf="@id/et_address"/>
 
     <EditText
+        android:hint="Enter description of items"
         android:id="@+id/et_items_list"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -61,8 +64,10 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/bt_add_items"
+        app:fabSize="normal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:src="@drawable/ic_add_white_24dp"
         android:onClick="@{() -> viewModel.saveThrowAwayItems()}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"

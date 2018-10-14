@@ -29,6 +29,7 @@ class ThrowAwayItemListViewModel @Inject constructor(
   }
 
   fun getThrowAwayItem(): LiveData<List<PickUpLocation>>? {
+    loadThrowAwayItemsFromRemote()
     if(throwAwayItemsList == null) {
       throwAwayItemsList = MutableLiveData()
       loadThrowAwayItem()
@@ -36,19 +37,17 @@ class ThrowAwayItemListViewModel @Inject constructor(
     return throwAwayItemsList
   }
 
-//  fun loadThrowAwayItemsFromRemote() {
-//    FirebaseFirestore.getInstance()
-//        .collection("users")
-//        .get()
-//        .addOnSuccessListener {
-//          if (!it.isEmpty) {
-//            throwAwayItemsList = it.toObjects(PickUpLocation::class.java)
-//                as MutableLiveData<List<PickUpLocation>>?
-//            Log.d("AAA", "ASdasf")
-//          } else {
-//          }
-//        }
-//  }
+  private fun loadThrowAwayItemsFromRemote() {
+    FirebaseFirestore.getInstance()
+        .collection("users")
+        .get()
+        .addOnSuccessListener {
+          if (!it.isEmpty) {
+            throwAwayItemsList?.postValue(it.toObjects(PickUpLocation::class.java))
+          } else {
+          }
+        }
+  }
 
   fun loadThrowAwayItem() {
     pickUpLacationsRepo.getAllPickUpLocations()

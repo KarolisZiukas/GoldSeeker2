@@ -5,24 +5,22 @@ import android.arch.lifecycle.Observer
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.example.bd0631.goldseeker.R
-import com.example.bd0631.goldseeker.database.PickUpLacationsRepo
 import com.example.bd0631.goldseeker.database.PickUpLocation
 import com.example.bd0631.goldseeker.databinding.FragmentLocationsBinding
-import com.example.bd0631.goldseeker.utils.LocationHelper
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.android.synthetic.main.fragment_locations.*
 
-class LocationsFragment : Fragment(), OnMapReadyCallback {
+class LocationsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
   lateinit var databinding: FragmentLocationsBinding
   lateinit var viewModel: LocationsViewModel
@@ -53,25 +51,38 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
 
   override fun onMapReady(googleMap: GoogleMap) {
 
-    viewModel.getThrowAwayItem()?.observe(this, Observer<List<PickUpLocation>> {
-      setMarkers(it, googleMap)
-    })
+    viewModel.getThrowAwayItem()
+        ?.observe(this, Observer<List<PickUpLocation>> {
+          setMarkers(it, googleMap)
+        })
 
   }
 
   private fun setMarkers(it: List<PickUpLocation>?, googleMap: GoogleMap) {
     map = googleMap
 
-    for(item in it!!.listIterator()) {
-      if(item.latitude != null && item.longitude != null){
-        map.addMarker(MarkerOptions().position(LatLng(item.longitude!!, item.latitude!!)).title(item.Address))
+    for (item in it!!.listIterator()) {
+      if (item.latitude != null && item.longitude != null) {
+        map.addMarker(MarkerOptions()
+            .position(LatLng(item.longitude!!, item.latitude!!))
+            .title(item.Address)
+            .snippet(item.id.toString()))
       }
     }
     map.moveCamera(CameraUpdateFactory.newLatLng(LatLng(51.1, 10.4)))
-    map.setOnMarkerClickListener {
-      Toast.makeText(context, it.snippet, Toast.LENGTH_LONG).show()
-      isVisible.value = true
-      false
+    map.setOnMarkerClickListener(this)
+  }
+
+  override fun onMarkerClick(marker: Marker?): Boolean {
+    for (item in viewModel.throwAwayItemsList!!.value!!.listIterator()) {
+      if (item.id.toString() == marker?.snippet) {
+        tv_items_description.text = item.itemsList
+        tv_address.text = item.Address
+        tv_location_name.text = item.warehouseName
+        isVisible.value = true
+      }
+
     }
+    return false
   }
 }
