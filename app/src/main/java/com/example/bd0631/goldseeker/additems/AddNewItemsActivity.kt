@@ -11,6 +11,7 @@ import com.example.bd0631.goldseeker.R
 import com.example.bd0631.goldseeker.base.BaseActivity
 import com.example.bd0631.goldseeker.replaceFragmentInActivity
 import com.example.bd0631.goldseeker.utils.FileCreator
+import com.example.bd0631.goldseeker.utils.LocationHelper
 import com.example.karolis.logginhours.widgets.Generator
 import java.io.File
 import java.io.IOException
@@ -40,6 +41,8 @@ class AddNewItemsActivity : BaseActivity(), AddNewItemsNavigator {
     viewModel = ViewModelProviders.of(this, customViewModelFactory)
         .get(AddNewItemsViewModel::class.java)
     viewModel.setNavigator(this)
+    viewModel.setContext(this)
+
     return viewModel
   }
 

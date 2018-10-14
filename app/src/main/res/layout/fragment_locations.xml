@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.bd0631.goldseeker.locations.LocationsViewModel"/>
+
+
+    </data>
+
 <android.support.constraint.ConstraintLayout
     android:id="@+id/v_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"

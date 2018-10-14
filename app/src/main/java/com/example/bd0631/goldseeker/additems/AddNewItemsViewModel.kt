@@ -1,12 +1,17 @@
 package com.example.bd0631.goldseeker.additems
 
 import android.arch.lifecycle.ViewModel
+import android.content.Context
 import android.databinding.ObservableField
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.location.Address
+import android.location.Geocoder
+import android.location.Location
 import android.util.Log
 import com.example.bd0631.goldseeker.database.PickUpLacationsRepo
 import com.example.bd0631.goldseeker.database.PickUpLocation
+import com.example.bd0631.goldseeker.utils.LocationHelper
 import com.example.karolis.logginhours.widgets.Generator
 import io.reactivex.Completable
 import io.reactivex.CompletableObserver
@@ -22,6 +27,7 @@ class AddNewItemsViewModel @Inject constructor(
     val pickUpLocationsRepo: PickUpLacationsRepo) : ViewModel() {
 
   private lateinit var navigator: AddNewItemsNavigator
+  private lateinit var context: Context
 
   val locationName = ObservableField<String>()
   val warehouseName = ObservableField<String>()
@@ -33,6 +39,11 @@ class AddNewItemsViewModel @Inject constructor(
     id = Generator.generateId()
     this.navigator = addNewItemsNavigator
   }
+
+  fun setContext(context: Context) {
+    this.context = context
+  }
+
 
   //Todo Fix remote
 //  private fun saveThrowAwayItemRemote() {
@@ -53,13 +64,19 @@ class AddNewItemsViewModel @Inject constructor(
 //  }
 
   private fun saveThrowAwayItemsLocal() {
+
+    val coordinates = LocationHelper().getCoordinates(locationName.get(), context)
+
     val stream = ByteArrayOutputStream()
     itemImage.get()?.compress(Bitmap.CompressFormat.PNG, 100, stream)
     Completable.fromAction {
       pickUpLocationsRepo
           .insertPickUpLocations(PickUpLocation(id,
               locationName.get(),
-              warehouseName.get()
+              warehouseName.get(),
+              itemsList.get(),
+              coordinates?.get(0)?.longitude,
+              coordinates?.get(0)?.latitude
           )
           )
     }
