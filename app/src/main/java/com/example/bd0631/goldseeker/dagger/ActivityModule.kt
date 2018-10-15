@@ -1,5 +1,7 @@
 package com.example.bd0631.goldseeker.dagger
 
+import com.example.bd0631.goldseeker.details.DetailsActivity
+import com.example.bd0631.goldseeker.details.DetailsModule
 import com.example.bd0631.goldseeker.additems.AddNewItemsActivity
 import com.example.bd0631.goldseeker.additems.AddNewItemsModule
 import com.example.bd0631.goldseeker.locations.LocationsActivity
@@ -23,4 +25,8 @@ abstract class ActivityModule {
   @ActivityScoped
   @ContributesAndroidInjector(modules = [(LocationsModule::class)])
   abstract fun LocationsActivity(): LocationsActivity
+
+  @ActivityScoped
+  @ContributesAndroidInjector(modules = [(DetailsModule::class)])
+  abstract fun DetailsActivity(): DetailsActivity
 }

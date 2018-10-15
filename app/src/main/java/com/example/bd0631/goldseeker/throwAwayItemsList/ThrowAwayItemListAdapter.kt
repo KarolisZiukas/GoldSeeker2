@@ -12,8 +12,9 @@ import com.example.bd0631.goldseeker.utils.FileCreator
 class ThrowAwayItemListAdapter(
     private var list: List<PickUpLocation>,
     private val pickUpLacationsRepo: PickUpLacationsRepo,
-    private val context: Context?
-): BaseRecyclerAdapter(), ThrowAwayItemListCallback {
+    private val context: Context?,
+    private val listItemNavigator: ListItemNavigator
+) : BaseRecyclerAdapter(), ThrowAwayItemListCallback {
 
   override fun getLayoutIdForPosition(position: Int) = R.layout.item_throw_away_item_list
 
@@ -33,11 +34,15 @@ class ThrowAwayItemListAdapter(
 
   private fun getImageBitmap(id: Long): Bitmap? {
     val file = FileCreator().createImageFile(id, context)
-    return if(file.exists()) BitmapFactory.decodeFile(file.absolutePath)
+    return if (file.exists()) BitmapFactory.decodeFile(file.absolutePath)
     else null
   }
 
   override fun onItemDeleted() {
     notifyDataSetChanged()
+  }
+
+  override fun onItemSelected(pickUpLocation: PickUpLocation?) {
+    listItemNavigator.onItemSelected(pickUpLocation)
   }
 }

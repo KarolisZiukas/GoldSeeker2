@@ -2,6 +2,7 @@ package com.example.bd0631.goldseeker
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
+import com.example.bd0631.goldseeker.details.DetailsViewModel
 import com.example.bd0631.goldseeker.additems.AddNewItemsViewModel
 import com.example.bd0631.goldseeker.database.PickUpLacationsRepo
 import com.example.bd0631.goldseeker.locations.LocationsViewModel
@@ -19,6 +20,8 @@ class CustomViewModelFactory @Inject constructor(val pickUpLacationsRepo: PickUp
       return ThrowAwayItemListViewModel(pickUpLacationsRepo) as T
     } else if (modelClass.isAssignableFrom(LocationsViewModel::class.java)) {
       return LocationsViewModel(pickUpLacationsRepo) as T
+    } else if (modelClass.isAssignableFrom(DetailsViewModel::class.java)) {
+      return DetailsViewModel(pickUpLacationsRepo) as T
     }
 
 

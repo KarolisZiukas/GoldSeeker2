@@ -3,6 +3,7 @@ package com.example.bd0631.goldseeker.database
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
 import android.support.annotation.NonNull
+import java.io.Serializable
 
 @Entity(tableName = "pickUpLocations")
 data class PickUpLocation(
@@ -12,5 +13,5 @@ data class PickUpLocation(
     var itemsList: String? = null,
     var latitude: Double? = 0.0,
     var longitude: Double? = 0.0
-)
+): Serializable
 

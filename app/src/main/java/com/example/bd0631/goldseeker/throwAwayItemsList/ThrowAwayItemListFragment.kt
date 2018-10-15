@@ -10,12 +10,13 @@ import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.bd0631.goldseeker.details.DetailsActivity
 import com.example.bd0631.goldseeker.R
 import com.example.bd0631.goldseeker.additems.AddNewItemsActivity
 import com.example.bd0631.goldseeker.database.PickUpLocation
 import com.example.bd0631.goldseeker.databinding.FragmentThrowAwayItemsListBinding
 
-class ThrowAwayItemListFragment : Fragment() {
+class ThrowAwayItemListFragment : Fragment(), ListItemNavigator {
 
   private lateinit var databinding: FragmentThrowAwayItemsListBinding
 
@@ -53,12 +54,18 @@ class ThrowAwayItemListFragment : Fragment() {
     recyclerView = databinding.rvThrowAwayItemsList
     recyclerView.layoutManager = StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
     recyclerView.setHasFixedSize(true)
-    adapter = ThrowAwayItemListAdapter(ArrayList(), viewModel.pickUpLacationsRepo, context)
+    adapter = ThrowAwayItemListAdapter(ArrayList(), viewModel.pickUpLacationsRepo, context, this)
     recyclerView.adapter = adapter
     viewModel.getThrowAwayItem()?.observe(this, Observer<List<PickUpLocation>> {
       adapter.updateData(it!!)
       adapter.notifyDataSetChanged()
     })
+  }
+
+  override fun onItemSelected(pickUpLocation: PickUpLocation?) {
+    val intent = Intent(context, DetailsActivity::class.java)
+    intent.putExtra("Location", pickUpLocation)
+    startActivity(intent)
   }
 
   companion object {

@@ -17,4 +17,7 @@ interface PickUpLocationDao {
 
   @Query("DELETE FROM pickUpLocations WHERE id = :id")
   fun removePickUpLocation(id: Long?)
+
+  @Query("SELECT * FROM pickUpLocations WHERE id = :id")
+  fun getSinglePickUpLocation(id: Long?): Single<PickUpLocation>
 }

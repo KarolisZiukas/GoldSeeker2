@@ -15,8 +15,6 @@ class AddNewItemsFragment: Fragment() {
 
   private lateinit var viewModel: AddNewItemsViewModel
 
-  lateinit var mCurrentPhotoPath: String
-
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
       savedInstanceState: Bundle?): View? {
     super.onCreateView(inflater, container, savedInstanceState)

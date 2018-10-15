@@ -1,9 +1,12 @@
 package com.example.bd0631.goldseeker.throwAwayItemsList
 
 import android.arch.lifecycle.ViewModel
+import android.content.Intent
 import android.graphics.Bitmap
+import android.support.v4.content.ContextCompat.startActivity
 import com.example.bd0631.goldseeker.database.PickUpLacationsRepo
 import com.example.bd0631.goldseeker.database.PickUpLocation
+import com.example.bd0631.goldseeker.locations.LocationsActivity
 import io.reactivex.Completable
 import io.reactivex.CompletableObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -36,4 +39,7 @@ class ThrowAwayItemListItemViewModel(
         })
   }
 
+  fun onItemSelected() {
+      throwAwayItemListCallback.onItemSelected(pickUpLocation)
+  }
 }

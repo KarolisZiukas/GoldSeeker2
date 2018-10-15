@@ -21,5 +21,9 @@ class PickUpLacationsRepo @Inject constructor(private val pickUpLocationDao: Pic
     pickUpLocationDao.removePickUpLocation(id)
   }
 
+  fun getSinglePickUpLocation(id: Long): Observable<PickUpLocation> {
+    return pickUpLocationDao.getSinglePickUpLocation(id)
+        .toObservable()
+  }
 
 }

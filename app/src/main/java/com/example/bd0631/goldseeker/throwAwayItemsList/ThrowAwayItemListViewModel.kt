@@ -29,7 +29,7 @@ class ThrowAwayItemListViewModel @Inject constructor(
   }
 
   fun getThrowAwayItem(): LiveData<List<PickUpLocation>>? {
-    loadThrowAwayItemsFromRemote()
+//    loadThrowAwayItemsFromRemote()
     if(throwAwayItemsList == null) {
       throwAwayItemsList = MutableLiveData()
       loadThrowAwayItem()
