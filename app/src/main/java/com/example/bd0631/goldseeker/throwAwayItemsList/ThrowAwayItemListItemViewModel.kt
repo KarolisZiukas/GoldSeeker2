@@ -7,11 +7,16 @@ import android.support.v4.content.ContextCompat.startActivity
 import com.example.bd0631.goldseeker.database.PickUpLacationsRepo
 import com.example.bd0631.goldseeker.database.PickUpLocation
 import com.example.bd0631.goldseeker.locations.LocationsActivity
+import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.Completable
 import io.reactivex.CompletableObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
+
+
 
 class ThrowAwayItemListItemViewModel(
     val pickUpLocation: PickUpLocation?,
@@ -20,7 +25,7 @@ class ThrowAwayItemListItemViewModel(
     val throwAwayItemListCallback: ThrowAwayItemListCallback) : ViewModel() {
 
 
-  fun removeItem() {
+  fun removeItemLocal() {
     Completable.fromAction {
       pickUpLacationsRepo.removePickUpLocation(pickUpLocation?.id)
     }
@@ -37,6 +42,16 @@ class ThrowAwayItemListItemViewModel(
           override fun onError(e: Throwable) {
           }
         })
+  }
+
+  fun removeItem() {
+    removeItemLocal()
+    removeItemFromRemote()
+  }
+
+  fun removeItemFromRemote() {
+    FirebaseFirestore.getInstance().collection("users").document("WMYraBHkJQX5H8owQWTW")
+        .delete()
   }
 
   fun onItemSelected() {

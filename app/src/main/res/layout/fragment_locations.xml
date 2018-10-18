@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -7,33 +8,30 @@
             name="viewModel"
             type="com.example.bd0631.goldseeker.locations.LocationsViewModel" />
 
-
     </data>
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/v_parent"
+    <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <fragment
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <android.support.v7.widget.CardView
-            android:layout_width="0dp"
-            android:layout_height="250dp"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            app:cardCornerRadius="16dp"
+            android:layout_height="0dp"
+            android:layout_weight="10"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent">
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="9">
 
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/v_details"
@@ -48,8 +46,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/tv_location_name"
@@ -66,8 +63,8 @@
                     android:id="@+id/tv_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="8dp"
                     android:paddingBottom="8dp"
+                    android:paddingLeft="8dp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_location_name"
                     tools:text="Gedimino pr 9" />
@@ -76,17 +73,17 @@
                     android:id="@+id/tv_items_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/tv_address"
                     android:paddingLeft="8dp"
-                    app:layout_constraintLeft_toLeftOf="parent" />
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_address" />
 
                 <android.support.design.widget.FloatingActionButton
                     android:id="@+id/fab_directions"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
-                    app:fabSize="normal"
                     android:src="@drawable/ic_directions_white_24dp"
+                    app:fabSize="normal"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toRightOf="parent" />
 
@@ -95,13 +92,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
-                    app:fabSize="mini"
                     android:src="@drawable/ic_message_white_24dp"
+                    app:fabSize="mini"
                     app:layout_constraintBottom_toTopOf="@id/fab_directions"
                     app:layout_constraintLeft_toLeftOf="@id/fab_directions"
                     app:layout_constraintRight_toRightOf="@id/fab_directions" />
 
             </android.support.constraint.ConstraintLayout>
         </android.support.v7.widget.CardView>
-    </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
 </layout>

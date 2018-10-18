@@ -18,6 +18,7 @@
             android:id="@+id/iv_location_photo"
             android:layout_width="0dp"
             android:layout_height="200dp"
+            android:scaleType="centerCrop"
             bind:imageBitmap="@{viewModel.imageFile}"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -51,6 +52,15 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_location_address" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fabSize="normal"
+            android:src="@drawable/ic_edit_black_24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="16dp"/>
 
     </android.support.constraint.ConstraintLayout>
 

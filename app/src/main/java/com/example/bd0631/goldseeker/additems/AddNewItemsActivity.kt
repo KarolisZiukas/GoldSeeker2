@@ -35,6 +35,8 @@ class AddNewItemsActivity : BaseActivity(), AddNewItemsNavigator {
         ?: AddNewItemsFragment.newInstance().also {
           replaceFragmentInActivity(it, R.id.content_frame)
         }
+
+
   }
 
   override fun obtainViewModel(): AddNewItemsViewModel {

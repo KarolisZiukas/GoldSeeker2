@@ -22,6 +22,9 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.fragment_locations.*
+import com.google.android.gms.maps.model.CameraPosition
+
+
 
 class LocationsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
@@ -72,7 +75,11 @@ class LocationsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClic
             .snippet(item.id.toString()))
       }
     }
-    map.moveCamera(CameraUpdateFactory.newLatLng(LatLng(51.1, 10.4)))
+    val cameraPosition = CameraPosition.Builder()
+        .target(LatLng(it[0].longitude!!, it[0].latitude!!))
+        .zoom(11f)
+        .build()
+    map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
     map.setOnMarkerClickListener(this)
   }
 
