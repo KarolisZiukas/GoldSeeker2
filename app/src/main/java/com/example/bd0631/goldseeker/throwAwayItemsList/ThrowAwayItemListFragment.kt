@@ -57,10 +57,16 @@ class ThrowAwayItemListFragment : Fragment(), ListItemNavigator {
     })
   }
 
+  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    super.onActivityResult(requestCode, resultCode, data)
+    viewModel.loadThrowAwayItem()
+    adapter.notifyDataSetChanged()
+  }
+
   override fun onItemSelected(pickUpLocation: PickUpLocation?) {
     val intent = Intent(context, DetailsActivity::class.java)
     intent.putExtra("Location", pickUpLocation)
-    startActivity(intent)
+    startActivityForResult(intent, AddNewItemsActivity.REQUEST_CODE)
   }
 
   override fun onItemDeleted(pickUpLocation: PickUpLocation?) {

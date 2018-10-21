@@ -6,6 +6,9 @@ import android.arch.lifecycle.ViewModel
 import android.graphics.Bitmap
 import com.example.bd0631.goldseeker.database.PickUpLacationsRepo
 import com.example.bd0631.goldseeker.database.PickUpLocation
+import com.google.firebase.firestore.FirebaseFirestore
+import io.reactivex.Completable
+import io.reactivex.CompletableObserver
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -19,6 +22,8 @@ class DetailsViewModel @Inject constructor(
 
   var imageFile: Bitmap? = null
   var throwAwayItem: MutableLiveData<PickUpLocation>? = null
+
+  private lateinit var listener: DetailsActionListener
 
 
   fun getThrowAwayItem(pickUpLocation: PickUpLocation): LiveData<PickUpLocation>? {
@@ -50,6 +55,43 @@ class DetailsViewModel @Inject constructor(
 
           }
         })
+  }
+
+  fun removeItemLocal() {
+    Completable.fromAction {
+      pickUpLacationsRepo.removePickUpLocation(throwAwayItem?.value?.id)
+    }
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribeOn(Schedulers.newThread())
+        .subscribe(object : CompletableObserver {
+          override fun onComplete() {
+            listener.onItemDeleted()
+          }
+
+          override fun onSubscribe(d: Disposable) {
+          }
+
+          override fun onError(e: Throwable) {
+          }
+        })
+  }
+
+  fun removeItem() {
+    removeItemFromRemote()
+    removeItemLocal()
+  }
+
+  fun removeItemFromRemote() {
+    FirebaseFirestore.getInstance()
+        .collection("locations")
+        .document(throwAwayItem?.value?.id.toString())
+        .delete()
+        .addOnSuccessListener {
+        }
+  }
+
+  fun setNavigator(detailsActionListener: DetailsActionListener) {
+    this.listener = detailsActionListener
   }
 
 

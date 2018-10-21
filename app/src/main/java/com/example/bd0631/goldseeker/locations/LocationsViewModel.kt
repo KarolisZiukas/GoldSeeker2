@@ -12,6 +12,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
+import android.content.Intent
+import android.net.Uri
+import android.support.v4.content.ContextCompat.startActivity
+
 
 class LocationsViewModel @Inject constructor(
     private val pickUpLacationsRepo: PickUpLacationsRepo
@@ -66,7 +70,7 @@ class LocationsViewModel @Inject constructor(
   }
 
   fun onSendMessageClicked() {
-    Log.v("SEND MESSAGE", "SEND MESSAGE")
+
   }
 
 

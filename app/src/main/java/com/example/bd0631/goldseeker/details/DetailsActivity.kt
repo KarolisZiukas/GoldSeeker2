@@ -5,12 +5,13 @@ import android.os.Bundle
 import android.support.v7.widget.Toolbar
 import com.example.bd0631.goldseeker.CustomViewModelFactory
 import com.example.bd0631.goldseeker.R
+import com.example.bd0631.goldseeker.additems.AddNewItemsActivity.Companion.ADD_RESULT_OK
 import com.example.bd0631.goldseeker.base.BaseActivity
 import com.example.bd0631.goldseeker.database.PickUpLocation
 import com.example.bd0631.goldseeker.replaceFragmentInActivity
 import javax.inject.Inject
 
-class DetailsActivity: BaseActivity() {
+class DetailsActivity: BaseActivity(), DetailsActionListener {
 
   @Inject
   lateinit var customViewModelFactory: CustomViewModelFactory
@@ -35,7 +36,12 @@ class DetailsActivity: BaseActivity() {
   override fun obtainViewModel(): DetailsViewModel {
     viewModel = ViewModelProviders.of(this, customViewModelFactory)
         .get(DetailsViewModel::class.java)
-
+    viewModel.setNavigator(this)
     return viewModel
+  }
+
+  override fun onItemDeleted() {
+    setResult(ADD_RESULT_OK)
+    finish()
   }
 }

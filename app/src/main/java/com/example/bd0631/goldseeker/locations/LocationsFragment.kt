@@ -23,7 +23,8 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.fragment_locations.*
 import com.google.android.gms.maps.model.CameraPosition
-
+import android.content.Intent
+import android.net.Uri
 
 
 class LocationsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
@@ -48,6 +49,11 @@ class LocationsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClic
     super.onActivityCreated(savedInstanceState)
     viewModel = (activity as LocationsActivity).obtainViewModel()
     databinding.viewModel = viewModel
+    fab_send_message.setOnClickListener {
+      val sendIntent = Intent(Intent.ACTION_VIEW)
+      sendIntent.data = Uri.parse("sms:" + tv_phone_number.text)
+      startActivity(sendIntent)
+    }
   }
 
   companion object {
@@ -89,6 +95,7 @@ class LocationsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClic
         tv_items_description.text = item.itemsList
         tv_address.text = item.Address
         tv_location_name.text = item.warehouseName
+        tv_phone_number.text = item.phoneNumber
         isVisible.value = true
       }
 

@@ -27,6 +27,7 @@ class AddNewItemsViewModel @Inject constructor(
 
   val locationName = ObservableField<String>()
   val warehouseName = ObservableField<String>()
+  val phoneNumber = ObservableField<String>()
   val itemsList = ObservableField<String>()
   val itemImage = ObservableField<Bitmap>()
   var id: Long = 0
@@ -44,6 +45,7 @@ class AddNewItemsViewModel @Inject constructor(
         .set(PickUpLocation(id,
             locationName.get(),
             warehouseName.get(),
+            phoneNumber.get().toString(),
             itemsList.get(),
             coordinates?.get(0)?.longitude,
             coordinates?.get(0)?.latitude
@@ -66,6 +68,7 @@ class AddNewItemsViewModel @Inject constructor(
           .insertPickUpLocations(PickUpLocation(id,
               locationName.get(),
               warehouseName.get(),
+              phoneNumber.get().toString(),
               itemsList.get(),
               coordinates?.get(0)?.longitude,
               coordinates?.get(0)?.latitude

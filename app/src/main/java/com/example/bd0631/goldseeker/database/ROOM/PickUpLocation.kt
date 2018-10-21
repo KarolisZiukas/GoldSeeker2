@@ -10,6 +10,7 @@ data class PickUpLocation(
     @PrimaryKey @NonNull var id: Long = 0,
     var Address: String? = null,
     var warehouseName: String? = null,
+    var phoneNumber: String? = null,
     var itemsList: String? = null,
     var latitude: Double? = 0.0,
     var longitude: Double? = 0.0
