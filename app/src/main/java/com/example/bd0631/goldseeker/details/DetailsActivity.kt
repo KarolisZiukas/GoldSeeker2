@@ -1,9 +1,8 @@
 package com.example.bd0631.goldseeker.details
 
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
+import android.support.v7.widget.Toolbar
 import com.example.bd0631.goldseeker.CustomViewModelFactory
 import com.example.bd0631.goldseeker.R
 import com.example.bd0631.goldseeker.base.BaseActivity
@@ -28,6 +27,9 @@ class DetailsActivity: BaseActivity() {
         ?: DetailsFragment.newInstance(pickUpLocation).also {
           replaceFragmentInActivity(it, R.id.content_frame)
         }
+
+    val toolbar: Toolbar = findViewById(R.id.toolbar)
+    setSupportActionBar(toolbar)
   }
 
   override fun obtainViewModel(): DetailsViewModel {

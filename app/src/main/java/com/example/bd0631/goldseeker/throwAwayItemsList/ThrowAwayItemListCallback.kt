@@ -4,7 +4,7 @@ import com.example.bd0631.goldseeker.database.PickUpLocation
 
 interface ThrowAwayItemListCallback {
 
-  fun onItemDeleted()
+  fun onItemDeleted(pickUpLocation: PickUpLocation?)
 
   fun onItemSelected(pickUpLocation: PickUpLocation?)
 

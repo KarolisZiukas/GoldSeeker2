@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.content.FileProvider
+import android.support.v7.widget.Toolbar
 import com.example.bd0631.goldseeker.CustomViewModelFactory
 import com.example.bd0631.goldseeker.R
 import com.example.bd0631.goldseeker.base.BaseActivity
@@ -36,15 +37,14 @@ class AddNewItemsActivity : BaseActivity(), AddNewItemsNavigator {
           replaceFragmentInActivity(it, R.id.content_frame)
         }
 
-
+    val toolbar: Toolbar = findViewById(R.id.toolbar)
+    setSupportActionBar(toolbar)
   }
 
   override fun obtainViewModel(): AddNewItemsViewModel {
     viewModel = ViewModelProviders.of(this, customViewModelFactory)
         .get(AddNewItemsViewModel::class.java)
     viewModel.setNavigator(this)
-    viewModel.setContext(this)
-
     return viewModel
   }
 

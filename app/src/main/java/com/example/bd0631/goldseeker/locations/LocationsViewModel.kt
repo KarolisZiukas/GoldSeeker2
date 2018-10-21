@@ -3,7 +3,7 @@ package com.example.bd0631.goldseeker.locations
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import android.content.Context
+import android.util.Log
 import com.example.bd0631.goldseeker.database.PickUpLacationsRepo
 import com.example.bd0631.goldseeker.database.PickUpLocation
 import com.google.firebase.firestore.FirebaseFirestore
@@ -29,7 +29,7 @@ class LocationsViewModel @Inject constructor(
 
   private fun loadThrowAwayItemsFromRemote() {
     FirebaseFirestore.getInstance()
-        .collection("users")
+        .collection("locations")
         .get()
         .addOnSuccessListener {
           if (!it.isEmpty) {
@@ -64,6 +64,11 @@ class LocationsViewModel @Inject constructor(
           }
         })
   }
+
+  fun onSendMessageClicked() {
+    Log.v("SEND MESSAGE", "SEND MESSAGE")
+  }
+
 
 
 }

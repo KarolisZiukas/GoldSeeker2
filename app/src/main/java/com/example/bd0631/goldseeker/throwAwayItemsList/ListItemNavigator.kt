@@ -6,4 +6,6 @@ interface ListItemNavigator {
 
   fun onItemSelected(pickUpLocation: PickUpLocation?)
 
+  fun onItemDeleted(pickUpLocation: PickUpLocation?)
+
 }

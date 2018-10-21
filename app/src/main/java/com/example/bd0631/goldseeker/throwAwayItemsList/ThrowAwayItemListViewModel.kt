@@ -38,7 +38,7 @@ class ThrowAwayItemListViewModel @Inject constructor(
 
   private fun loadThrowAwayItemsFromRemote() {
     FirebaseFirestore.getInstance()
-        .collection("users")
+        .collection("locations")
         .get()
         .addOnSuccessListener {
           if (!it.isEmpty) {

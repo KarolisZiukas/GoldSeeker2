@@ -45,11 +45,6 @@ class ThrowAwayItemListFragment : Fragment(), ListItemNavigator {
     initRecyclerView()
   }
 
-  private fun startAddNewThrowAwayItemsActivity() {
-    val intent = Intent(activity, AddNewItemsActivity::class.java)
-    startActivityForResult(intent, 1)
-  }
-
   private fun initRecyclerView() {
     recyclerView = databinding.rvThrowAwayItemsList
     recyclerView.layoutManager = StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
@@ -66,6 +61,12 @@ class ThrowAwayItemListFragment : Fragment(), ListItemNavigator {
     val intent = Intent(context, DetailsActivity::class.java)
     intent.putExtra("Location", pickUpLocation)
     startActivity(intent)
+  }
+
+  override fun onItemDeleted(pickUpLocation: PickUpLocation?) {
+    viewModel.getThrowAwayItem()?.observe(this, Observer<List<PickUpLocation>> {
+      adapter.updateData(it!!)
+    })
   }
 
   companion object {

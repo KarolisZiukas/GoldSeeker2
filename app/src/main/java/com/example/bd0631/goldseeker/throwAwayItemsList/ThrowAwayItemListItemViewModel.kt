@@ -33,7 +33,6 @@ class ThrowAwayItemListItemViewModel(
         .subscribeOn(Schedulers.newThread())
         .subscribe(object : CompletableObserver {
           override fun onComplete() {
-            throwAwayItemListCallback.onItemDeleted()
           }
 
           override fun onSubscribe(d: Disposable) {
@@ -45,13 +44,18 @@ class ThrowAwayItemListItemViewModel(
   }
 
   fun removeItem() {
-    removeItemLocal()
     removeItemFromRemote()
+    removeItemLocal()
+    throwAwayItemListCallback.onItemDeleted(pickUpLocation)
   }
 
   fun removeItemFromRemote() {
-    FirebaseFirestore.getInstance().collection("users").document("WMYraBHkJQX5H8owQWTW")
+    FirebaseFirestore.getInstance()
+        .collection("locations")
+        .document(pickUpLocation?.id.toString())
         .delete()
+        .addOnSuccessListener {
+        }
   }
 
   fun onItemSelected() {

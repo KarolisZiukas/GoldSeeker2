@@ -8,8 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.bd0631.goldseeker.R
 import com.example.bd0631.goldseeker.databinding.FragmentAddNewItemsBinding
+import com.example.bd0631.goldseeker.utils.LocationHelper
+import kotlinx.android.synthetic.main.fragment_add_new_items.*
 
-class AddNewItemsFragment: Fragment() {
+class AddNewItemsFragment: Fragment(), View.OnClickListener {
 
   lateinit var databinding: FragmentAddNewItemsBinding
 
@@ -29,13 +31,19 @@ class AddNewItemsFragment: Fragment() {
     super.onActivityCreated(savedInstanceState)
     viewModel = (activity as AddNewItemsActivity).obtainViewModel()
     databinding.viewModel = viewModel
-
+    bt_add_items.setOnClickListener(this)
   }
 
   companion object {
     fun newInstance(): AddNewItemsFragment {
       return AddNewItemsFragment()
     }
+  }
+
+  override fun onClick(p0: View?) {
+    viewModel.saveThrowAwayItems(
+        LocationHelper().getCoordinates(viewModel.locationName.get(), context!!)
+    )
   }
 
 

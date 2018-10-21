@@ -38,7 +38,9 @@ class ThrowAwayItemListAdapter(
     else null
   }
 
-  override fun onItemDeleted() {
+  override fun onItemDeleted(pickUpLocation: PickUpLocation?) {
+    list[0].Address = "OOOOPPAA"
+    listItemNavigator.onItemDeleted(pickUpLocation)
     notifyDataSetChanged()
   }
 

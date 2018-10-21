@@ -68,7 +68,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_add_white_24dp"
-        android:onClick="@{() -> viewModel.saveThrowAwayItems()}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_margin="16dp"/>

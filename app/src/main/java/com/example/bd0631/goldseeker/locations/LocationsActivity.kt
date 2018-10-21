@@ -2,15 +2,13 @@ package com.example.bd0631.goldseeker.locations
 
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
-import android.location.Address
-import android.location.Geocoder
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
-import android.support.v7.app.AppCompatActivity
-import android.widget.Toast
+import android.support.v7.app.ActionBar
+import android.support.v7.widget.Toolbar
+import android.view.MenuItem
 import com.example.bd0631.goldseeker.CustomViewModelFactory
 import com.example.bd0631.goldseeker.R
-import com.example.bd0631.goldseeker.additems.AddNewItemsViewModel
 import com.example.bd0631.goldseeker.base.BaseActivity
 import com.example.bd0631.goldseeker.replaceFragmentInActivity
 import com.example.bd0631.goldseeker.throwAwayItemsList.ThrowAwayItemListActivity
@@ -32,6 +30,13 @@ class LocationsActivity : BaseActivity() {
           replaceFragmentInActivity(it, R.id.content_frame)
         }
     setUpNavigationDrawer()
+    val toolbar: Toolbar = findViewById(R.id.toolbar)
+    setSupportActionBar(toolbar)
+    val actionbar: ActionBar? = supportActionBar
+    actionbar?.apply {
+      setDisplayHomeAsUpEnabled(true)
+      setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp)
+    }
   }
 
   private fun setUpNavigationDrawer() {
@@ -56,5 +61,15 @@ class LocationsActivity : BaseActivity() {
     viewModel = ViewModelProviders.of(this, customViewModelFactory)
         .get(LocationsViewModel::class.java)
     return viewModel
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    return when (item.itemId) {
+      android.R.id.home -> {
+        drawer_layout.openDrawer(GravityCompat.START)
+        true
+      }
+      else -> super.onOptionsItemSelected(item)
+    }
   }
 }
