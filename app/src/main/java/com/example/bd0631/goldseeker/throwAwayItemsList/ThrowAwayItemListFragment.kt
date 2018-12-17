@@ -13,7 +13,7 @@ import android.view.ViewGroup
 import com.example.bd0631.goldseeker.details.DetailsActivity
 import com.example.bd0631.goldseeker.R
 import com.example.bd0631.goldseeker.additems.AddNewItemsActivity
-import com.example.bd0631.goldseeker.database.PickUpLocation
+import com.example.bd0631.goldseeker.database.ROOM.PickUpLocation
 import com.example.bd0631.goldseeker.databinding.FragmentThrowAwayItemsListBinding
 
 class ThrowAwayItemListFragment : Fragment(), ListItemNavigator {
@@ -61,6 +61,10 @@ class ThrowAwayItemListFragment : Fragment(), ListItemNavigator {
     super.onActivityResult(requestCode, resultCode, data)
     viewModel.loadThrowAwayItem()
     adapter.notifyDataSetChanged()
+//    viewModel.getThrowAwayItem()?.observe(this, Observer<List<PickUpLocation>> {
+//      adapter.updateData(it!!)
+//      adapter.notifyDataSetChanged()
+//    })
   }
 
   override fun onItemSelected(pickUpLocation: PickUpLocation?) {

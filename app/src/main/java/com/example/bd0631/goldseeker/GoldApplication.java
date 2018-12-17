@@ -17,9 +17,7 @@ import dagger.android.HasActivityInjector;
 public class GoldApplication extends DaggerApplication implements HasActivityInjector {
 
     //Todo clean UP!!!!
-    //Todo deletion
     //Todo editing
-    //Todo sms Intent
     @Inject DispatchingAndroidInjector<Fragment> fragmentInjector;
 
     @Inject PickUpLacationsRepo pickUpLacationsRepo;

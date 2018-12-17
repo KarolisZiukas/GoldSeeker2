@@ -1,4 +1,4 @@
-package com.example.bd0631.goldseeker.database
+package com.example.bd0631.goldseeker.database.ROOM
 
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey

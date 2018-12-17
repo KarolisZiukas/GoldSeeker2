@@ -3,18 +3,14 @@ package com.example.bd0631.goldseeker.locations
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import android.util.Log
 import com.example.bd0631.goldseeker.database.PickUpLacationsRepo
-import com.example.bd0631.goldseeker.database.PickUpLocation
+import com.example.bd0631.goldseeker.database.ROOM.PickUpLocation
 import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
-import android.content.Intent
-import android.net.Uri
-import android.support.v4.content.ContextCompat.startActivity
 
 
 class LocationsViewModel @Inject constructor(
@@ -22,6 +18,8 @@ class LocationsViewModel @Inject constructor(
 ) : ViewModel() {
 
   var throwAwayItemsList: MutableLiveData<List<PickUpLocation>>? = null
+  var isVisible = MutableLiveData<Boolean>()
+
 
   fun getThrowAwayItem(): LiveData<List<PickUpLocation>>? {
     if (throwAwayItemsList == null) {
@@ -68,13 +66,6 @@ class LocationsViewModel @Inject constructor(
           }
         })
   }
-
-  fun onSendMessageClicked() {
-
-  }
-
-
-
 }
 
 

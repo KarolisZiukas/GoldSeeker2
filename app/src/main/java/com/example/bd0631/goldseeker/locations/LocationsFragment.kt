@@ -1,30 +1,26 @@
 package com.example.bd0631.goldseeker.locations
 
-import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
+import android.content.Intent
 import android.databinding.DataBindingUtil
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.bd0631.goldseeker.R
-import com.example.bd0631.goldseeker.database.PickUpLocation
+import com.example.bd0631.goldseeker.database.ROOM.PickUpLocation
 import com.example.bd0631.goldseeker.databinding.FragmentLocationsBinding
-import com.example.bd0631.goldseeker.utils.FileCreator
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.fragment_locations.*
-import com.google.android.gms.maps.model.CameraPosition
-import android.content.Intent
-import android.net.Uri
 
 
 class LocationsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
@@ -33,7 +29,6 @@ class LocationsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClic
   lateinit var viewModel: LocationsViewModel
 
   private lateinit var map: GoogleMap
-  val isVisible = MutableLiveData<Boolean>()
   var selected = false
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -49,6 +44,8 @@ class LocationsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClic
     super.onActivityCreated(savedInstanceState)
     viewModel = (activity as LocationsActivity).obtainViewModel()
     databinding.viewModel = viewModel
+    viewModel.isVisible.value = true
+
     fab_send_message.setOnClickListener {
       val sendIntent = Intent(Intent.ACTION_VIEW)
       sendIntent.data = Uri.parse("sms:" + tv_phone_number.text)
@@ -62,7 +59,6 @@ class LocationsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClic
   }
 
   override fun onMapReady(googleMap: GoogleMap) {
-
     viewModel.getThrowAwayItem()
         ?.observe(this, Observer<List<PickUpLocation>> {
           setMarkers(it, googleMap)
@@ -72,7 +68,6 @@ class LocationsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClic
 
   private fun setMarkers(it: List<PickUpLocation>?, googleMap: GoogleMap) {
     map = googleMap
-
     for (item in it!!.listIterator()) {
       if (item.latitude != null && item.longitude != null) {
         map.addMarker(MarkerOptions()
@@ -81,12 +76,15 @@ class LocationsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClic
             .snippet(item.id.toString()))
       }
     }
-    val cameraPosition = CameraPosition.Builder()
-        .target(LatLng(it[0].longitude!!, it[0].latitude!!))
-        .zoom(11f)
-        .build()
-    map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
-    map.setOnMarkerClickListener(this)
+    if (it[0].latitude != null && it[0].longitude != null) {
+      val cameraPosition = CameraPosition.Builder()
+          .target(LatLng(it[0].longitude!!, it[0].latitude!!))
+          .zoom(11f)
+          .build()
+      map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+      map.setOnMarkerClickListener(this)
+    }
+
   }
 
   override fun onMarkerClick(marker: Marker?): Boolean {
@@ -96,10 +94,10 @@ class LocationsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClic
         tv_address.text = item.Address
         tv_location_name.text = item.warehouseName
         tv_phone_number.text = item.phoneNumber
-        isVisible.value = true
       }
 
     }
+    viewModel.isVisible.value = false
     return false
   }
 

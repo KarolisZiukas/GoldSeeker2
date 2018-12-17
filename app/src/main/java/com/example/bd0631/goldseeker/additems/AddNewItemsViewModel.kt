@@ -7,7 +7,7 @@ import android.graphics.BitmapFactory
 import android.location.Address
 import android.util.Log
 import com.example.bd0631.goldseeker.database.PickUpLacationsRepo
-import com.example.bd0631.goldseeker.database.PickUpLocation
+import com.example.bd0631.goldseeker.database.ROOM.PickUpLocation
 import com.example.karolis.logginhours.widgets.Generator
 import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.Completable
@@ -42,14 +42,16 @@ class AddNewItemsViewModel @Inject constructor(
 
     firestore.collection("locations")
         .document(id.toString())
-        .set(PickUpLocation(id,
+        .set(
+            PickUpLocation(id,
             locationName.get(),
             warehouseName.get(),
             phoneNumber.get().toString(),
             itemsList.get(),
             coordinates?.get(0)?.longitude,
             coordinates?.get(0)?.latitude
-        ))
+        )
+        )
         .addOnSuccessListener {
           navigator.onNewPickUpItemSaved()
           Log.d("SAVED", "DocumentSnapshot added with ID: ")
@@ -65,7 +67,8 @@ class AddNewItemsViewModel @Inject constructor(
     itemImage.get()?.compress(Bitmap.CompressFormat.PNG, 100, stream)
     Completable.fromAction {
       pickUpLocationsRepo
-          .insertPickUpLocations(PickUpLocation(id,
+          .insertPickUpLocations(
+              PickUpLocation(id,
               locationName.get(),
               warehouseName.get(),
               phoneNumber.get().toString(),

@@ -34,17 +34,16 @@ class AddNewItemsFragment: Fragment(), View.OnClickListener {
     bt_add_items.setOnClickListener(this)
   }
 
-  companion object {
-    fun newInstance(): AddNewItemsFragment {
-      return AddNewItemsFragment()
-    }
-  }
-
   override fun onClick(p0: View?) {
     viewModel.saveThrowAwayItems(
         LocationHelper().getCoordinates(viewModel.locationName.get(), context!!)
     )
   }
 
+  companion object {
+    fun newInstance(): AddNewItemsFragment {
+      return AddNewItemsFragment()
+    }
+  }
 
 }

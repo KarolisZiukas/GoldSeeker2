@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory
 import com.example.bd0631.goldseeker.R
 import com.example.bd0631.goldseeker.base.BaseRecyclerAdapter
 import com.example.bd0631.goldseeker.database.PickUpLacationsRepo
-import com.example.bd0631.goldseeker.database.PickUpLocation
+import com.example.bd0631.goldseeker.database.ROOM.PickUpLocation
 import com.example.bd0631.goldseeker.utils.FileCreator
 
 class ThrowAwayItemListAdapter(

@@ -3,10 +3,8 @@ package com.example.bd0631.goldseeker.throwAwayItemsList
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import android.util.Log
 import com.example.bd0631.goldseeker.database.PickUpLacationsRepo
-import com.example.bd0631.goldseeker.database.PickUpLocation
-import com.google.firebase.firestore.FirebaseFirestore
+import com.example.bd0631.goldseeker.database.ROOM.PickUpLocation
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -36,18 +34,6 @@ class ThrowAwayItemListViewModel @Inject constructor(
     return throwAwayItemsList
   }
 
-  private fun loadThrowAwayItemsFromRemote() {
-    FirebaseFirestore.getInstance()
-        .collection("locations")
-        .get()
-        .addOnSuccessListener {
-          if (!it.isEmpty) {
-            throwAwayItemsList?.postValue(it.toObjects(PickUpLocation::class.java))
-          } else {
-          }
-        }
-  }
-
   fun loadThrowAwayItem() {
     pickUpLacationsRepo.getAllPickUpLocations()
         .subscribeOn(Schedulers.newThread())
@@ -62,11 +48,7 @@ class ThrowAwayItemListViewModel @Inject constructor(
           }
 
           override fun onNext(t: List<PickUpLocation>) {
-            if(t.isEmpty()) {
-              loadThrowAwayItemsFromRemote()
-            } else {
               throwAwayItemsList?.value = t
-            }
           }
 
           override fun onError(e: Throwable) {

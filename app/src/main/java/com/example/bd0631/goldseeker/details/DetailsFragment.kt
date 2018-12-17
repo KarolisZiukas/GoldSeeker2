@@ -1,6 +1,5 @@
 package com.example.bd0631.goldseeker.details
 
-import android.arch.lifecycle.Observer
 import android.databinding.DataBindingUtil
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -10,7 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.bd0631.goldseeker.R
-import com.example.bd0631.goldseeker.database.PickUpLocation
+import com.example.bd0631.goldseeker.database.ROOM.PickUpLocation
 import com.example.bd0631.goldseeker.databinding.FragmentItemDetailsBinding
 import com.example.bd0631.goldseeker.utils.FileCreator
 
@@ -33,10 +32,9 @@ class DetailsFragment: Fragment() {
     super.onActivityCreated(savedInstanceState)
     val pickUpLocation = arguments?.getSerializable("LOCATIONS") as PickUpLocation
     viewModel = (activity as DetailsActivity).obtainViewModel()
-    viewModel
-        .getThrowAwayItem(pickUpLocation)
-        ?.observe(this, Observer<PickUpLocation> {})
-    viewModel.imageFile = getImageBitmap(pickUpLocation.id)
+
+    viewModel.throwAwayItem.value = pickUpLocation
+    viewModel.imageFile= getImageBitmap(pickUpLocation.id)
     databinding.viewModel = viewModel
   }
 

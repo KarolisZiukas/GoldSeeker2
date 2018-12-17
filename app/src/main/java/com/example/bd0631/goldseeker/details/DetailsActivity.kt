@@ -7,7 +7,7 @@ import com.example.bd0631.goldseeker.CustomViewModelFactory
 import com.example.bd0631.goldseeker.R
 import com.example.bd0631.goldseeker.additems.AddNewItemsActivity.Companion.ADD_RESULT_OK
 import com.example.bd0631.goldseeker.base.BaseActivity
-import com.example.bd0631.goldseeker.database.PickUpLocation
+import com.example.bd0631.goldseeker.database.ROOM.PickUpLocation
 import com.example.bd0631.goldseeker.replaceFragmentInActivity
 import javax.inject.Inject
 

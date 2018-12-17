@@ -4,6 +4,7 @@ package com.example.bd0631.goldseeker.database
 import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.Query
+import com.example.bd0631.goldseeker.database.ROOM.PickUpLocation
 import io.reactivex.Single
 
 @Dao

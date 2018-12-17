@@ -5,7 +5,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.graphics.Bitmap
 import com.example.bd0631.goldseeker.database.PickUpLacationsRepo
-import com.example.bd0631.goldseeker.database.PickUpLocation
+import com.example.bd0631.goldseeker.database.ROOM.PickUpLocation
 import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.Completable
 import io.reactivex.CompletableObserver
@@ -21,7 +21,8 @@ class DetailsViewModel @Inject constructor(
 
 
   var imageFile: Bitmap? = null
-  var throwAwayItem: MutableLiveData<PickUpLocation>? = null
+  var throwAwayItem = MutableLiveData<PickUpLocation>()
+  var isLoading = MutableLiveData<Boolean>()
 
   private lateinit var listener: DetailsActionListener
 
@@ -35,13 +36,14 @@ class DetailsViewModel @Inject constructor(
   }
 
   fun loadThrowAwayItem(pickUpLocation: PickUpLocation) {
+    isLoading.value = true
     pickUpLacationsRepo.getSinglePickUpLocation(pickUpLocation.id)
         .subscribeOn(Schedulers.newThread())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(object : Observer<PickUpLocation> {
 
           override fun onComplete() {
-
+            isLoading.value = false
           }
 
           override fun onSubscribe(d: Disposable) {
@@ -65,7 +67,6 @@ class DetailsViewModel @Inject constructor(
         .subscribeOn(Schedulers.newThread())
         .subscribe(object : CompletableObserver {
           override fun onComplete() {
-            listener.onItemDeleted()
           }
 
           override fun onSubscribe(d: Disposable) {
@@ -77,16 +78,17 @@ class DetailsViewModel @Inject constructor(
   }
 
   fun removeItem() {
-    removeItemFromRemote()
     removeItemLocal()
+    removeItemFromRemote()
   }
 
   fun removeItemFromRemote() {
     FirebaseFirestore.getInstance()
         .collection("locations")
-        .document(throwAwayItem?.value?.id.toString())
+        .document(throwAwayItem.value?.id.toString())
         .delete()
         .addOnSuccessListener {
+          listener.onItemDeleted()
         }
   }
 
