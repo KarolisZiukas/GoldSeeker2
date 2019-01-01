@@ -1,7 +1,7 @@
 package com.example.bd0631.goldseeker.additems
 
+import android.arch.lifecycle.Observer
 import android.databinding.DataBindingUtil
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
@@ -133,9 +133,9 @@ class AddNewItemsFragment: Fragment(), View.OnClickListener {
       showToast("Uninitialized Classifier or invalid context.")
       return
     }
-    val bitmap = BitmapFactory.decodeResource(resources, R.drawable.testmicro1)
-    val textToShow = classifier?.classifyFrame(bitmap)
-    bitmap.recycle()
-    showToast(textToShow!!)
+    //FIX THREADING
+    viewModel.itemImage.observe(this, Observer {
+      showToast(classifier?.classifyFrame(it)!!)
+    })
   }
 }

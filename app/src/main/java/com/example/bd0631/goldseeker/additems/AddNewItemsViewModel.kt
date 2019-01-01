@@ -1,5 +1,6 @@
 package com.example.bd0631.goldseeker.additems
 
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.databinding.ObservableField
 import android.graphics.Bitmap
@@ -29,7 +30,7 @@ class AddNewItemsViewModel @Inject constructor(
   val warehouseName = ObservableField<String>()
   val phoneNumber = ObservableField<String>()
   val itemsList = ObservableField<String>()
-  val itemImage = ObservableField<Bitmap>()
+  val itemImage = MutableLiveData<Bitmap>()
   var id: Long = 0
 
   fun setNavigator(addNewItemsNavigator: AddNewItemsNavigator) {
@@ -62,9 +63,8 @@ class AddNewItemsViewModel @Inject constructor(
   }
 
   private fun saveThrowAwayItemsLocal(coordinates: List<Address>?) {
-
     val stream = ByteArrayOutputStream()
-    itemImage.get()?.compress(Bitmap.CompressFormat.PNG, 100, stream)
+    itemImage.value?.compress(Bitmap.CompressFormat.PNG, 100, stream)
     Completable.fromAction {
       pickUpLocationsRepo
           .insertPickUpLocations(
@@ -105,7 +105,7 @@ class AddNewItemsViewModel @Inject constructor(
 
   fun loadImageFromFile(id: Long, file: File?) {
     if (file!!.exists()) {
-      itemImage.set(BitmapFactory.decodeFile(file.absolutePath))
+      itemImage.value = BitmapFactory.decodeFile(file.absolutePath)
     }
   }
 }
