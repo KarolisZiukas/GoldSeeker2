@@ -1,0 +1,201 @@
+Index: app/src/main/java/com/example/bd0631/goldseeker/additems/AddNewItemsFragment.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.bd0631.goldseeker.additems\n\nimport android.arch.lifecycle.Observer\nimport android.databinding.DataBindingUtil\nimport android.os.Bundle\nimport android.os.Handler\nimport android.os.HandlerThread\nimport android.support.v4.app.Fragment\nimport android.util.Log\nimport android.view.LayoutInflater\nimport android.view.View\nimport android.view.ViewGroup\nimport com.example.bd0631.goldseeker.R\nimport com.example.bd0631.goldseeker.databinding.FragmentAddNewItemsBinding\nimport com.example.bd0631.goldseeker.utils.LocationHelper\nimport kotlinx.android.synthetic.main.fragment_add_new_items.*\nimport java.io.IOException\n\nclass AddNewItemsFragment: Fragment(), View.OnClickListener {\n\n  private val TAG = \"TfLiteCameraDemo\"\n\n  private val HANDLE_THREAD_NAME = \"CameraBackground\"\n\n  private val lock = Any()\n  private var runClassifier = false\n  private var classifier: ImageClassifier? = null\n\n  /** An additional thread for running tasks that shouldn't block the UI.  */\n  private var backgroundThread: HandlerThread? = null\n\n  /** A [Handler] for running tasks in the background.  */\n  private var backgroundHandler: Handler? = null\n\n  lateinit var databinding: FragmentAddNewItemsBinding\n\n  private lateinit var viewModel: AddNewItemsViewModel\n\n  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,\n      savedInstanceState: Bundle?): View? {\n    super.onCreateView(inflater, container, savedInstanceState)\n    databinding = DataBindingUtil.inflate(inflater,\n        R.layout.fragment_add_new_items,\n        container,\n        false)\n    return databinding.root\n  }\n\n  override fun onActivityCreated(savedInstanceState: Bundle?) {\n    super.onActivityCreated(savedInstanceState)\n    viewModel = (activity as AddNewItemsActivity).obtainViewModel()\n    databinding.viewModel = viewModel\n    bt_add_items.setOnClickListener(this)\n    try {\n      classifier = ImageClassifier(activity as AddNewItemsActivity)\n    } catch (e: IOException) {\n      Log.e(TAG, \"Failed to initialize an image classifier.\")\n    }\n    startBackgroundThread()\n  }\n\n  override fun onClick(p0: View?) {\n    viewModel.saveThrowAwayItems(\n        LocationHelper().getCoordinates(viewModel.locationName.get(), context!!)\n    )\n  }\n\n  companion object {\n    fun newInstance(): AddNewItemsFragment {\n      return AddNewItemsFragment()\n    }\n  }\n\n  private fun showToast(text: String) {\n    val activity = activity\n    activity?.runOnUiThread { tv_tensor.text = text }\n  }\n\n  override fun onResume() {\n    super.onResume()\n    startBackgroundThread()\n  }\n\n  override fun onPause() {\n    stopBackgroundThread()\n    super.onPause()\n  }\n\n  override fun onDestroy() {\n    classifier?.close()\n    super.onDestroy()\n  }\n\n  private fun startBackgroundThread() {\n    backgroundThread = HandlerThread(HANDLE_THREAD_NAME)\n    backgroundThread?.start()\n    backgroundHandler = Handler(backgroundThread?.looper)\n    synchronized(lock) {\n      runClassifier = true\n    }\n    backgroundHandler?.post(periodicClassify)\n  }\n\n  /** Stops the background thread and its [Handler].  */\n  private fun stopBackgroundThread() {\n    backgroundThread?.quitSafely()\n    try {\n      backgroundThread?.join()\n//      backgroundThread = null\n//      backgroundHandler = null\n      synchronized(lock) {\n        runClassifier = false\n      }\n    } catch (e: InterruptedException) {\n      e.printStackTrace()\n    }\n\n  }\n\n  private val periodicClassify = object : Runnable {\n    override fun run() {\n      synchronized(lock) {\n        if (runClassifier) {\n          classifyFrame()\n        }\n      }\n      backgroundHandler?.post(this)\n    }\n  }\n\n  private fun classifyFrame() {\n    if (classifier == null || activity == null) {\n      showToast(\"Uninitialized Classifier or invalid context.\")\n      return\n    }\n    //FIX THREADING\n    viewModel.itemImage.observe(this, Observer {\n      showToast(classifier?.classifyFrame(it)!!)\n    })\n  }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/bd0631/goldseeker/additems/AddNewItemsFragment.kt	(revision ad82036192f172ea4c3514637c11749bc57f9da2)
++++ app/src/main/java/com/example/bd0631/goldseeker/additems/AddNewItemsFragment.kt	(date 1546554457000)
+@@ -2,6 +2,7 @@
+ 
+ import android.arch.lifecycle.Observer
+ import android.databinding.DataBindingUtil
++import android.graphics.BitmapFactory
+ import android.os.Bundle
+ import android.os.Handler
+ import android.os.HandlerThread
+@@ -13,6 +14,10 @@
+ import com.example.bd0631.goldseeker.R
+ import com.example.bd0631.goldseeker.databinding.FragmentAddNewItemsBinding
+ import com.example.bd0631.goldseeker.utils.LocationHelper
++import io.reactivex.Observable
++import io.reactivex.android.schedulers.AndroidSchedulers
++import io.reactivex.disposables.Disposable
++import io.reactivex.schedulers.Schedulers
+ import kotlinx.android.synthetic.main.fragment_add_new_items.*
+ import java.io.IOException
+ 
+@@ -56,7 +61,36 @@
+     } catch (e: IOException) {
+       Log.e(TAG, "Failed to initialize an image classifier.")
+     }
+-    startBackgroundThread()
++//    startBackgroundThread()
++    clasifyFrameRx()
++  }
++
++  fun clasifyFrameRx() {
++    viewModel.itemImage.observe(this, Observer {
++      classifier?.classifyFrame(BitmapFactory.decodeResource(resources, R.drawable.testmicro1))
++          ?.observeOn(AndroidSchedulers.mainThread())
++          ?.subscribeOn(Schedulers.io())
++          ?.subscribe(
++              object : io.reactivex.Observer<String> {
++                override fun onComplete() {
++                  Log.d("COMPLETED", "COMPLETED")
++                }
++
++                override fun onSubscribe(d: Disposable) {
++                  Log.d("SUBSCRIBED", "SUBSCRIBED")
++                }
++
++                override fun onNext(t: String) {
++                  tv_tensor.text = t
++                }
++
++                override fun onError(e: Throwable) {
++                  Log.d("ERROR", "ERROR")
++                }
++              }
++          )
++    })
++
+   }
+ 
+   override fun onClick(p0: View?) {
+@@ -78,11 +112,12 @@
+ 
+   override fun onResume() {
+     super.onResume()
+-    startBackgroundThread()
++    clasifyFrameRx()
++//    startBackgroundThread()
+   }
+ 
+   override fun onPause() {
+-    stopBackgroundThread()
++//    stopBackgroundThread()
+     super.onPause()
+   }
+ 
+@@ -98,11 +133,12 @@
+     synchronized(lock) {
+       runClassifier = true
+     }
+-    backgroundHandler?.post(periodicClassify)
++//    backgroundHandler?.post(periodicClassify)
+   }
+ 
+   /** Stops the background thread and its [Handler].  */
+   private fun stopBackgroundThread() {
++
+     backgroundThread?.quitSafely()
+     try {
+       backgroundThread?.join()
+@@ -117,25 +153,24 @@
+ 
+   }
+ 
+-  private val periodicClassify = object : Runnable {
+-    override fun run() {
+-      synchronized(lock) {
+-        if (runClassifier) {
+-          classifyFrame()
+-        }
+-      }
+-      backgroundHandler?.post(this)
+-    }
+-  }
++//  private val periodicClassify = object : Runnable {
++//    override fun run() {
++//      synchronized(lock) {
++//        if (runClassifier) {
++//          classifyFrame()
++//        }
++//      }
++//      backgroundHandler?.post(this)
++//    }
++//  }
+ 
+-  private fun classifyFrame() {
++  private fun classifyFrame(): Observable<Unit> {
+     if (classifier == null || activity == null) {
+       showToast("Uninitialized Classifier or invalid context.")
+-      return
++      return Observable.just(Unit)
+     }
+     //FIX THREADING
+-    viewModel.itemImage.observe(this, Observer {
+-      showToast(classifier?.classifyFrame(it)!!)
+-    })
++
++    return Observable.just(Unit)
+   }
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/example/bd0631/goldseeker/additems/ImageClassifier.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/* Copyright 2017 The TensorFlow Authors. All Rights Reserved.\n\nLicensed under the Apache License, Version 2.0 (the \"License\");\nyou may not use this file except in compliance with the License.\nYou may obtain a copy of the License at\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an \"AS IS\" BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific language governing permissions and\nlimitations under the License.\n==============================================================================*/\n\npackage com.example.bd0631.goldseeker.additems;\n\nimport android.app.Activity;\nimport android.content.res.AssetFileDescriptor;\nimport android.graphics.Bitmap;\nimport android.os.SystemClock;\nimport android.util.Log;\n\nimport org.tensorflow.lite.Interpreter;\n\nimport java.io.BufferedReader;\nimport java.io.FileInputStream;\nimport java.io.IOException;\nimport java.io.InputStreamReader;\nimport java.nio.ByteBuffer;\nimport java.nio.ByteOrder;\nimport java.nio.MappedByteBuffer;\nimport java.nio.channels.FileChannel;\nimport java.util.AbstractMap;\nimport java.util.ArrayList;\nimport java.util.Comparator;\nimport java.util.List;\nimport java.util.Map;\nimport java.util.PriorityQueue;\n\n/** Classifies images with Tensorflow Lite. */\npublic class ImageClassifier {\n\n  /** Tag for the {@link Log}. */\n  private static final String TAG = \"TfLiteCameraDemo\";\n\n  /** Name of the model file stored in Assets. */\n  private static final String MODEL_PATH = \"graph.lite\";\n\n  /** Name of the label file stored in Assets. */\n  private static final String LABEL_PATH = \"labels.txt\";\n\n  /** Number of results to show in the UI. */\n  private static final int RESULTS_TO_SHOW = 3;\n\n  /** Dimensions of inputs. */\n  private static final int DIM_BATCH_SIZE = 1;\n\n  private static final int DIM_PIXEL_SIZE = 3;\n\n  static final int DIM_IMG_SIZE_X = 224;\n  static final int DIM_IMG_SIZE_Y = 224;\n\n  private static final int IMAGE_MEAN = 128;\n  private static final float IMAGE_STD = 128.0f;\n\n\n  /* Preallocated buffers for storing image data in. */\n  private int[] intValues = new int[DIM_IMG_SIZE_X * DIM_IMG_SIZE_Y];\n\n  /** An instance of the driver class to run model inference with Tensorflow Lite. */\n  private Interpreter tflite;\n\n  /** Labels corresponding to the output of the vision model. */\n  private List<String> labelList;\n\n  /** A ByteBuffer to hold image data, to be feed into Tensorflow Lite as inputs. */\n  private ByteBuffer imgData = null;\n\n  /** An array to hold inference results, to be feed into Tensorflow Lite as outputs. */\n  private float[][] labelProbArray = null;\n  /** multi-stage low pass filter **/\n  private float[][] filterLabelProbArray = null;\n  private static final int FILTER_STAGES = 3;\n  private static final float FILTER_FACTOR = 0.4f;\n\n  private PriorityQueue<Map.Entry<String, Float>> sortedLabels =\n      new PriorityQueue<>(\n          RESULTS_TO_SHOW,\n          new Comparator<Map.Entry<String, Float>>() {\n            @Override\n            public int compare(Map.Entry<String, Float> o1, Map.Entry<String, Float> o2) {\n              return (o1.getValue()).compareTo(o2.getValue());\n            }\n          });\n\n  /** Initializes an {@code ImageClassifier}. */\n  ImageClassifier(Activity activity) throws IOException {\n    tflite = new Interpreter(loadModelFile(activity));\n    labelList = loadLabelList(activity);\n    imgData =\n        ByteBuffer.allocateDirect(\n            4 * DIM_BATCH_SIZE * DIM_IMG_SIZE_X * DIM_IMG_SIZE_Y * DIM_PIXEL_SIZE);\n    imgData.order(ByteOrder.nativeOrder());\n    labelProbArray = new float[1][labelList.size()];\n    filterLabelProbArray = new float[FILTER_STAGES][labelList.size()];\n    Log.d(TAG, \"Created a Tensorflow Lite Image Classifier.\");\n  }\n\n  /** Classifies a frame from the preview stream. */\n  String classifyFrame(Bitmap bitmap) {\n    if (tflite == null) {\n      Log.e(TAG, \"Image classifier has not been initialized; Skipped.\");\n      return \"Uninitialized Classifier.\";\n    }\n    convertBitmapToByteBuffer(bitmap);\n    // Here's where the magic happens!!!\n    long startTime = SystemClock.uptimeMillis();\n    tflite.run(imgData, labelProbArray);\n    long endTime = SystemClock.uptimeMillis();\n    Log.d(TAG, \"Timecost to run model inference: \" + Long.toString(endTime - startTime));\n\n    // smooth the results\n    applyFilter();\n\n    // print the results\n    String textToShow = printTopKLabels();\n    textToShow = Long.toString(endTime - startTime) + \"ms\" + textToShow;\n    return textToShow;\n  }\n\n  void applyFilter(){\n    int num_labels =  labelList.size();\n\n    // Low pass filter `labelProbArray` into the first stage of the filter.\n    for(int j=0; j<num_labels; ++j){\n      filterLabelProbArray[0][j] += FILTER_FACTOR*(labelProbArray[0][j] -\n                                                   filterLabelProbArray[0][j]);\n    }\n    // Low pass filter each stage into the next.\n    for (int i=1; i<FILTER_STAGES; ++i){\n      for(int j=0; j<num_labels; ++j){\n        filterLabelProbArray[i][j] += FILTER_FACTOR*(\n                filterLabelProbArray[i-1][j] -\n                filterLabelProbArray[i][j]);\n\n      }\n    }\n\n    // Copy the last stage filter output back to `labelProbArray`.\n    for(int j=0; j<num_labels; ++j){\n      labelProbArray[0][j] = filterLabelProbArray[FILTER_STAGES-1][j];\n    }\n  }\n\n  /** Closes tflite to release resources. */\n  public void close() {\n    tflite.close();\n    tflite = null;\n  }\n\n  /** Reads label list from Assets. */\n  private List<String> loadLabelList(Activity activity) throws IOException {\n    List<String> labelList = new ArrayList<String>();\n    BufferedReader reader =\n        new BufferedReader(new InputStreamReader(activity.getAssets().open(LABEL_PATH)));\n    String line;\n    while ((line = reader.readLine()) != null) {\n      labelList.add(line);\n    }\n    reader.close();\n    return labelList;\n  }\n\n  /** Memory-map the model file in Assets. */\n  private MappedByteBuffer loadModelFile(Activity activity) throws IOException {\n    AssetFileDescriptor fileDescriptor = activity.getAssets().openFd(MODEL_PATH);\n    FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());\n    FileChannel fileChannel = inputStream.getChannel();\n    long startOffset = fileDescriptor.getStartOffset();\n    long declaredLength = fileDescriptor.getDeclaredLength();\n    return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);\n  }\n\n  /** Writes Image data into a {@code ByteBuffer}. */\n  private void convertBitmapToByteBuffer(Bitmap bitmap) {\n    if (imgData == null) {\n      return;\n    }\n    imgData.rewind();\n    intValues = new int[bitmap.getWidth()*bitmap.getHeight()];\n    bitmap.getPixels(intValues, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());\n    // Convert the image to floating point.\n    int pixel = 0;\n    long startTime = SystemClock.uptimeMillis();\n    for (int i = 0; i < DIM_IMG_SIZE_X; ++i) {\n      for (int j = 0; j < DIM_IMG_SIZE_Y; ++j) {\n        final int val = intValues[pixel++];\n        imgData.putFloat((((val >> 16) & 0xFF)-IMAGE_MEAN)/IMAGE_STD);\n        imgData.putFloat((((val >> 8) & 0xFF)-IMAGE_MEAN)/IMAGE_STD);\n        imgData.putFloat((((val) & 0xFF)-IMAGE_MEAN)/IMAGE_STD);\n      }\n    }\n    long endTime = SystemClock.uptimeMillis();\n    Log.d(TAG, \"Timecost to put values into ByteBuffer: \" + Long.toString(endTime - startTime));\n  }\n\n  /** Prints top-K labels, to be shown in UI as the results. */\n  private String printTopKLabels() {\n    for (int i = 0; i < labelList.size(); ++i) {\n      sortedLabels.add(\n          new AbstractMap.SimpleEntry<>(labelList.get(i), labelProbArray[0][i]));\n      if (sortedLabels.size() > RESULTS_TO_SHOW) {\n        sortedLabels.poll();\n      }\n    }\n    String textToShow = \"\";\n    final int size = sortedLabels.size();\n    for (int i = 0; i < size; ++i) {\n      Map.Entry<String, Float> label = sortedLabels.poll();\n      textToShow = String.format(\"\\n%s: %4.2f\",label.getKey(),label.getValue()) + textToShow;\n    }\n    return textToShow;\n  }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/bd0631/goldseeker/additems/ImageClassifier.java	(revision ad82036192f172ea4c3514637c11749bc57f9da2)
++++ app/src/main/java/com/example/bd0631/goldseeker/additems/ImageClassifier.java	(date 1546554168000)
+@@ -38,6 +38,8 @@
+ import java.util.Map;
+ import java.util.PriorityQueue;
+ 
++import io.reactivex.Observable;
++
+ /** Classifies images with Tensorflow Lite. */
+ public class ImageClassifier {
+ 
+@@ -108,10 +110,10 @@
+   }
+ 
+   /** Classifies a frame from the preview stream. */
+-  String classifyFrame(Bitmap bitmap) {
++  Observable<String> classifyFrame(Bitmap bitmap) {
+     if (tflite == null) {
+       Log.e(TAG, "Image classifier has not been initialized; Skipped.");
+-      return "Uninitialized Classifier.";
++      return Observable.just("Uninitialized Classifier.");
+     }
+     convertBitmapToByteBuffer(bitmap);
+     // Here's where the magic happens!!!
+@@ -119,14 +121,13 @@
+     tflite.run(imgData, labelProbArray);
+     long endTime = SystemClock.uptimeMillis();
+     Log.d(TAG, "Timecost to run model inference: " + Long.toString(endTime - startTime));
+-
+     // smooth the results
+     applyFilter();
+ 
+     // print the results
+     String textToShow = printTopKLabels();
+     textToShow = Long.toString(endTime - startTime) + "ms" + textToShow;
+-    return textToShow;
++    return Observable.just(textToShow);
+   }
+ 
+   void applyFilter(){
+Index: app/src/main/java/com/example/bd0631/goldseeker/additems/AddNewItemsViewModel.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.bd0631.goldseeker.additems\n\nimport android.arch.lifecycle.MutableLiveData\nimport android.arch.lifecycle.ViewModel\nimport android.databinding.ObservableField\nimport android.graphics.Bitmap\nimport android.graphics.BitmapFactory\nimport android.location.Address\nimport android.util.Log\nimport com.example.bd0631.goldseeker.database.PickUpLacationsRepo\nimport com.example.bd0631.goldseeker.database.ROOM.PickUpLocation\nimport com.example.karolis.logginhours.widgets.Generator\nimport com.google.firebase.firestore.FirebaseFirestore\nimport io.reactivex.Completable\nimport io.reactivex.CompletableObserver\nimport io.reactivex.android.schedulers.AndroidSchedulers\nimport io.reactivex.disposables.Disposable\nimport io.reactivex.schedulers.Schedulers\nimport java.io.ByteArrayOutputStream\nimport java.io.File\nimport javax.inject.Inject\n\n\nclass AddNewItemsViewModel @Inject constructor(\n    val pickUpLocationsRepo: PickUpLacationsRepo) : ViewModel() {\n\n  private lateinit var navigator: AddNewItemsNavigator\n\n  val locationName = ObservableField<String>()\n  val warehouseName = ObservableField<String>()\n  val phoneNumber = ObservableField<String>()\n  val itemsList = ObservableField<String>()\n  val itemImage = MutableLiveData<Bitmap>()\n  var id: Long = 0\n\n  fun setNavigator(addNewItemsNavigator: AddNewItemsNavigator) {\n    id = Generator.generateId()\n    this.navigator = addNewItemsNavigator\n  }\n\n  private fun saveThrowAwayItemRemote(coordinates: List<Address>?) {\n    val firestore = FirebaseFirestore.getInstance()\n\n    firestore.collection(\"locations\")\n        .document(id.toString())\n        .set(\n            PickUpLocation(id,\n            locationName.get(),\n            warehouseName.get(),\n            phoneNumber.get().toString(),\n            itemsList.get(),\n            coordinates?.get(0)?.longitude,\n            coordinates?.get(0)?.latitude\n        )\n        )\n        .addOnSuccessListener {\n          navigator.onNewPickUpItemSaved()\n          Log.d(\"SAVED\", \"DocumentSnapshot added with ID: \")\n        }\n        .addOnFailureListener {\n          Log.d(\"FAILED SAVING\", \"Not added\" + it.localizedMessage)\n        }\n  }\n\n  private fun saveThrowAwayItemsLocal(coordinates: List<Address>?) {\n    val stream = ByteArrayOutputStream()\n    itemImage.value?.compress(Bitmap.CompressFormat.PNG, 100, stream)\n    Completable.fromAction {\n      pickUpLocationsRepo\n          .insertPickUpLocations(\n              PickUpLocation(id,\n              locationName.get(),\n              warehouseName.get(),\n              phoneNumber.get().toString(),\n              itemsList.get(),\n              coordinates?.get(0)?.longitude,\n              coordinates?.get(0)?.latitude\n          )\n          )\n    }\n        .observeOn(AndroidSchedulers.mainThread())\n        .subscribeOn(Schedulers.newThread())\n        .subscribe(object : CompletableObserver {\n          override fun onComplete() {\n            navigator.onNewPickUpItemSaved()\n          }\n\n          override fun onSubscribe(d: Disposable) {\n          }\n\n          override fun onError(e: Throwable) {\n            Log.d(\"SAVING ERROR\", e.message)\n          }\n        })\n  }\n\n  fun addPicture() {\n    navigator.onAddPictureClicked()\n  }\n\n  fun saveThrowAwayItems(coordinates: List<Address>?) {\n    saveThrowAwayItemsLocal(coordinates)\n    saveThrowAwayItemRemote(coordinates)\n  }\n\n  fun loadImageFromFile(id: Long, file: File?) {\n    if (file!!.exists()) {\n      itemImage.value = BitmapFactory.decodeFile(file.absolutePath)\n    }\n  }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/bd0631/goldseeker/additems/AddNewItemsViewModel.kt	(revision ad82036192f172ea4c3514637c11749bc57f9da2)
++++ app/src/main/java/com/example/bd0631/goldseeker/additems/AddNewItemsViewModel.kt	(date 1546554457000)
+@@ -30,7 +30,7 @@
+   val warehouseName = ObservableField<String>()
+   val phoneNumber = ObservableField<String>()
+   val itemsList = ObservableField<String>()
+-  val itemImage = MutableLiveData<Bitmap>()
++    var itemImage = MutableLiveData<Bitmap>()
+   var id: Long = 0
+ 
+   fun setNavigator(addNewItemsNavigator: AddNewItemsNavigator) {

@@ -1,6 +1,5 @@
 package com.example.bd0631.goldseeker.additems
 
-import android.arch.lifecycle.Observer
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.os.Handler
@@ -61,7 +60,8 @@ class AddNewItemsFragment: Fragment(), View.OnClickListener {
 
   override fun onClick(p0: View?) {
     viewModel.saveThrowAwayItems(
-        LocationHelper().getCoordinates(viewModel.locationName.get(), context!!)
+        LocationHelper().getCoordinates(viewModel.locationName.get(), context!!),
+        tv_tensor.text.toString()
     )
   }
 
@@ -71,9 +71,16 @@ class AddNewItemsFragment: Fragment(), View.OnClickListener {
     }
   }
 
-  private fun showToast(text: String) {
+  private fun showToast(text: List<TensorItem>?) {
     val activity = activity
-    activity?.runOnUiThread { tv_tensor.text = text }
+    activity?.runOnUiThread {
+      if (text != null) {
+        for (item in text.listIterator()) {
+          if(item.itemGuess > 0.50)
+          tv_tensor.text = item.itemName
+        }
+      }
+    }
   }
 
   override fun onResume() {
@@ -106,8 +113,6 @@ class AddNewItemsFragment: Fragment(), View.OnClickListener {
     backgroundThread?.quitSafely()
     try {
       backgroundThread?.join()
-//      backgroundThread = null
-//      backgroundHandler = null
       synchronized(lock) {
         runClassifier = false
       }
@@ -130,12 +135,11 @@ class AddNewItemsFragment: Fragment(), View.OnClickListener {
 
   private fun classifyFrame() {
     if (classifier == null || activity == null) {
-      showToast("Uninitialized Classifier or invalid context.")
+      showToast(null)
       return
     }
-    //FIX THREADING
-    viewModel.itemImage.observe(this, Observer {
-      showToast(classifier?.classifyFrame(it)!!)
-    })
+    if (viewModel.itemImage.get() != null) {
+      showToast(classifier?.classifyFrame(viewModel.itemImage.get())!!)
+    }
   }
 }

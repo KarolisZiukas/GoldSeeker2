@@ -30,7 +30,7 @@ class AddNewItemsViewModel @Inject constructor(
   val warehouseName = ObservableField<String>()
   val phoneNumber = ObservableField<String>()
   val itemsList = ObservableField<String>()
-  val itemImage = MutableLiveData<Bitmap>()
+  val itemImage = ObservableField<Bitmap>()
   var id: Long = 0
 
   fun setNavigator(addNewItemsNavigator: AddNewItemsNavigator) {
@@ -62,14 +62,15 @@ class AddNewItemsViewModel @Inject constructor(
         }
   }
 
-  private fun saveThrowAwayItemsLocal(coordinates: List<Address>?) {
+  private fun saveThrowAwayItemsLocal(coordinates: List<Address>?, item: String) {
     val stream = ByteArrayOutputStream()
-    itemImage.value?.compress(Bitmap.CompressFormat.PNG, 100, stream)
+    itemImage.get()?.compress(Bitmap.CompressFormat.PNG, 100, stream)
+//    itemImage.value?.compress(Bitmap.CompressFormat.PNG, 100, stream)
     Completable.fromAction {
       pickUpLocationsRepo
           .insertPickUpLocations(
               PickUpLocation(id,
-              locationName.get(),
+              item,
               warehouseName.get(),
               phoneNumber.get().toString(),
               itemsList.get(),
@@ -98,14 +99,15 @@ class AddNewItemsViewModel @Inject constructor(
     navigator.onAddPictureClicked()
   }
 
-  fun saveThrowAwayItems(coordinates: List<Address>?) {
-    saveThrowAwayItemsLocal(coordinates)
+  fun saveThrowAwayItems(coordinates: List<Address>?, item: String) {
+    saveThrowAwayItemsLocal(coordinates, item)
     saveThrowAwayItemRemote(coordinates)
   }
 
   fun loadImageFromFile(id: Long, file: File?) {
     if (file!!.exists()) {
-      itemImage.value = BitmapFactory.decodeFile(file.absolutePath)
+      itemImage.set(BitmapFactory.decodeFile(file.absolutePath))
+//      itemImage.value = BitmapFactory.decodeFile(file.absolutePath)
     }
   }
 }
