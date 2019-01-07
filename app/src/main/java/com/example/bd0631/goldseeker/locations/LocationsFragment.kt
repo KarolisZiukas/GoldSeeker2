@@ -92,7 +92,6 @@ class LocationsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClic
       if (item.id.toString() == marker?.snippet) {
         tv_items_description.text = item.itemsList
         tv_address.text = item.Address
-        tv_location_name.text = item.warehouseName
         tv_phone_number.text = item.phoneNumber
       }
 

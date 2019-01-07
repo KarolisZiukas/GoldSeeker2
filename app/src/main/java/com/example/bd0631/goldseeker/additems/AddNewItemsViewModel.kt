@@ -27,10 +27,10 @@ class AddNewItemsViewModel @Inject constructor(
   private lateinit var navigator: AddNewItemsNavigator
 
   val locationName = ObservableField<String>()
-  val warehouseName = ObservableField<String>()
   val phoneNumber = ObservableField<String>()
   val itemsList = ObservableField<String>()
   val itemImage = ObservableField<Bitmap>()
+  val isLoading = MutableLiveData<Boolean>()
   var id: Long = 0
 
   fun setNavigator(addNewItemsNavigator: AddNewItemsNavigator) {
@@ -40,13 +40,12 @@ class AddNewItemsViewModel @Inject constructor(
 
   private fun saveThrowAwayItemRemote(coordinates: List<Address>?) {
     val firestore = FirebaseFirestore.getInstance()
-
+    isLoading.value = true
     firestore.collection("locations")
         .document(id.toString())
         .set(
             PickUpLocation(id,
             locationName.get(),
-            warehouseName.get(),
             phoneNumber.get().toString(),
             itemsList.get(),
             coordinates?.get(0)?.longitude,
@@ -54,10 +53,12 @@ class AddNewItemsViewModel @Inject constructor(
         )
         )
         .addOnSuccessListener {
+          isLoading.value = false
           navigator.onNewPickUpItemSaved()
           Log.d("SAVED", "DocumentSnapshot added with ID: ")
         }
         .addOnFailureListener {
+          isLoading.value = false
           Log.d("FAILED SAVING", "Not added" + it.localizedMessage)
         }
   }
@@ -71,7 +72,6 @@ class AddNewItemsViewModel @Inject constructor(
           .insertPickUpLocations(
               PickUpLocation(id,
               item,
-              warehouseName.get(),
               phoneNumber.get().toString(),
               itemsList.get(),
               coordinates?.get(0)?.longitude,
@@ -83,13 +83,16 @@ class AddNewItemsViewModel @Inject constructor(
         .subscribeOn(Schedulers.newThread())
         .subscribe(object : CompletableObserver {
           override fun onComplete() {
+            isLoading.value = false
             navigator.onNewPickUpItemSaved()
           }
 
           override fun onSubscribe(d: Disposable) {
+            isLoading.value = true
           }
 
           override fun onError(e: Throwable) {
+            isLoading.value = false
             Log.d("SAVING ERROR", e.message)
           }
         })
@@ -100,6 +103,7 @@ class AddNewItemsViewModel @Inject constructor(
   }
 
   fun saveThrowAwayItems(coordinates: List<Address>?, item: String) {
+    isLoading.value = true
     saveThrowAwayItemsLocal(coordinates, item)
     saveThrowAwayItemRemote(coordinates)
   }

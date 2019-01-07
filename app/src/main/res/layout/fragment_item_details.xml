@@ -28,24 +28,11 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tv_location_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="32sp"
-            android:textStyle="bold"
-            android:layout_marginLeft="16dp"
-            android:text="@{viewModel.throwAwayItem.warehouseName}"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_location_photo"
-            />
-
-        <TextView
             android:id="@+id/tv_location_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="24sp"
             android:layout_marginLeft="16dp"
-
             android:text="@{viewModel.throwAwayItem.Address}"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_location_name" />

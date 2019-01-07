@@ -35,25 +35,11 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tv_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
-                android:text="@{viewModel.pickUpLocation.warehouseName}"
-                app:layout_constraintLeft_toRightOf="@id/iv_items_thumbnail"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Garage"
-                />
-
-            <TextView
                 android:id="@+id/tv_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@{viewModel.pickUpLocation.address}"
-                app:layout_constraintLeft_toLeftOf="@id/tv_name"
-                app:layout_constraintTop_toBottomOf="@id/tv_name"
                 tools:text="6th av"
                 />
 

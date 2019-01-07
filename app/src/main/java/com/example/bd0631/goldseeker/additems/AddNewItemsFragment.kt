@@ -75,10 +75,13 @@ class AddNewItemsFragment: Fragment(), View.OnClickListener {
     val activity = activity
     activity?.runOnUiThread {
       if (text != null) {
+        var textToShow = ""
         for (item in text.listIterator()) {
+          textToShow = "\n" + textToShow + item.itemGuess + item.itemName + "\n"
           if(item.itemGuess > 0.50)
           tv_tensor.text = item.itemName
         }
+        Log.d("TENSOR RESULT", textToShow)
       }
     }
   }
