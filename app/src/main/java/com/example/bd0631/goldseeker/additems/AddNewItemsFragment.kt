@@ -9,13 +9,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.example.bd0631.goldseeker.R
 import com.example.bd0631.goldseeker.databinding.FragmentAddNewItemsBinding
 import com.example.bd0631.goldseeker.utils.LocationHelper
 import kotlinx.android.synthetic.main.fragment_add_new_items.*
 import java.io.IOException
 
-class AddNewItemsFragment: Fragment(), View.OnClickListener {
+class AddNewItemsFragment : Fragment(), View.OnClickListener {
 
   private val TAG = "TfLiteCameraDemo"
 
@@ -35,13 +36,17 @@ class AddNewItemsFragment: Fragment(), View.OnClickListener {
 
   private lateinit var viewModel: AddNewItemsViewModel
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-      savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+      inflater: LayoutInflater, container: ViewGroup?,
+      savedInstanceState: Bundle?
+  ): View? {
     super.onCreateView(inflater, container, savedInstanceState)
-    databinding = DataBindingUtil.inflate(inflater,
+    databinding = DataBindingUtil.inflate(
+        inflater,
         R.layout.fragment_add_new_items,
         container,
-        false)
+        false
+    )
     return databinding.root
   }
 
@@ -59,10 +64,17 @@ class AddNewItemsFragment: Fragment(), View.OnClickListener {
   }
 
   override fun onClick(p0: View?) {
-    viewModel.saveThrowAwayItems(
-        LocationHelper().getCoordinates(viewModel.locationName.get(), context!!),
-        tv_tensor.text.toString()
-    )
+    if (viewModel.itemDescription.get() == null
+        || viewModel.locationName.get() == null
+        || viewModel.phoneNumber.get() == null) {
+      Toast.makeText(context, "All fields are required", Toast.LENGTH_SHORT).show()
+    } else {
+      viewModel.saveThrowAwayItems(
+          LocationHelper().getCoordinates(viewModel.locationName.get(), context!!),
+          tv_tensor.text.toString()
+      )
+    }
+
   }
 
   companion object {
@@ -78,8 +90,8 @@ class AddNewItemsFragment: Fragment(), View.OnClickListener {
         var textToShow = ""
         for (item in text.listIterator()) {
           textToShow = "\n" + textToShow + item.itemGuess + item.itemName + "\n"
-          if(item.itemGuess > 0.50)
-          tv_tensor.text = item.itemName
+          if (item.itemGuess > 0.50)
+            tv_tensor.text = item.itemName
         }
         Log.d("TENSOR RESULT", textToShow)
       }

@@ -60,11 +60,13 @@ class DetailsViewModel @Inject constructor(
   }
 
   fun removeItemLocal() {
+    isLoading.value = true
     Completable.fromAction {
       pickUpLacationsRepo.removePickUpLocation(throwAwayItem?.value?.id)
     }
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeOn(Schedulers.newThread())
+        .doFinally { isLoading.value = false }
         .subscribe(object : CompletableObserver {
           override fun onComplete() {
           }
@@ -83,11 +85,13 @@ class DetailsViewModel @Inject constructor(
   }
 
   fun removeItemFromRemote() {
+    isLoading.value = true
     FirebaseFirestore.getInstance()
         .collection("locations")
         .document(throwAwayItem.value?.id.toString())
         .delete()
         .addOnSuccessListener {
+          isLoading.value = false
           listener.onItemDeleted()
         }
   }

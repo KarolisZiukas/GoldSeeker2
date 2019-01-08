@@ -28,8 +28,8 @@ class AddNewItemsViewModel @Inject constructor(
 
   val locationName = ObservableField<String>()
   val phoneNumber = ObservableField<String>()
-  val itemsList = ObservableField<String>()
   val itemImage = ObservableField<Bitmap>()
+  val itemDescription = ObservableField<String>()
   val isLoading = MutableLiveData<Boolean>()
   var id: Long = 0
 
@@ -38,19 +38,21 @@ class AddNewItemsViewModel @Inject constructor(
     this.navigator = addNewItemsNavigator
   }
 
-  private fun saveThrowAwayItemRemote(coordinates: List<Address>?) {
+  private fun saveThrowAwayItemRemote(coordinates: List<Address>?, item: String) {
     val firestore = FirebaseFirestore.getInstance()
     isLoading.value = true
     firestore.collection("locations")
         .document(id.toString())
         .set(
-            PickUpLocation(id,
-            locationName.get(),
-            phoneNumber.get().toString(),
-            itemsList.get(),
-            coordinates?.get(0)?.longitude,
-            coordinates?.get(0)?.latitude
-        )
+            PickUpLocation(
+                id,
+                locationName.get(),
+                phoneNumber.get().toString(),
+                item,
+                itemDescription.get(),
+                coordinates?.get(0)?.longitude,
+                coordinates?.get(0)?.latitude
+            )
         )
         .addOnSuccessListener {
           isLoading.value = false
@@ -64,19 +66,22 @@ class AddNewItemsViewModel @Inject constructor(
   }
 
   private fun saveThrowAwayItemsLocal(coordinates: List<Address>?, item: String) {
-    val stream = ByteArrayOutputStream()
-    itemImage.get()?.compress(Bitmap.CompressFormat.PNG, 100, stream)
+    //Use this if something starts to crash
+//    val stream = ByteArrayOutputStream()
+//    itemImage.get()?.compress(Bitmap.CompressFormat.PNG, 100, stream)
 //    itemImage.value?.compress(Bitmap.CompressFormat.PNG, 100, stream)
     Completable.fromAction {
       pickUpLocationsRepo
           .insertPickUpLocations(
-              PickUpLocation(id,
-              item,
-              phoneNumber.get().toString(),
-              itemsList.get(),
-              coordinates?.get(0)?.longitude,
-              coordinates?.get(0)?.latitude
-          )
+              PickUpLocation(
+                  id,
+                  locationName.get(),
+                  phoneNumber.get().toString(),
+                  item,
+                  itemDescription.get(),
+                  coordinates?.get(0)?.longitude,
+                  coordinates?.get(0)?.latitude
+              )
           )
     }
         .observeOn(AndroidSchedulers.mainThread())
@@ -105,7 +110,7 @@ class AddNewItemsViewModel @Inject constructor(
   fun saveThrowAwayItems(coordinates: List<Address>?, item: String) {
     isLoading.value = true
     saveThrowAwayItemsLocal(coordinates, item)
-    saveThrowAwayItemRemote(coordinates)
+    saveThrowAwayItemRemote(coordinates, item)
   }
 
   fun loadImageFromFile(id: Long, file: File?) {

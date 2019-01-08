@@ -90,7 +90,6 @@ class LocationsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClic
   override fun onMarkerClick(marker: Marker?): Boolean {
     for (item in viewModel.throwAwayItemsList!!.value!!.listIterator()) {
       if (item.id.toString() == marker?.snippet) {
-        tv_items_description.text = item.itemsList
         tv_address.text = item.Address
         tv_phone_number.text = item.phoneNumber
       }

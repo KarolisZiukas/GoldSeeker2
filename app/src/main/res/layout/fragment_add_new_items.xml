@@ -33,16 +33,6 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <EditText
-        android:hint="Enter description of items"
-        android:id="@+id/et_items_list"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@={viewModel.itemsList}"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        />
-
-    <EditText
         android:id="@+id/et_phone_number"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -51,7 +41,17 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:hint="Enter phone number"
-        app:layout_constraintTop_toBottomOf="@id/et_items_list" />
+        app:layout_constraintTop_toBottomOf="@id/et_address" />
+
+    <EditText
+        android:id="@+id/et_item_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@={viewModel.itemDescription}"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:hint="Enter item description"
+        app:layout_constraintTop_toBottomOf="@id/et_phone_number" />
 
     <Button
         android:id="@+id/bt_add_photo"
@@ -59,7 +59,7 @@
         android:layout_height="wrap_content"
         android:text="Add Photo"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_phone_number"
+        app:layout_constraintTop_toBottomOf="@id/et_item_description"
         android:onClick="@{() -> viewModel.addPicture()}"/>
 
     <ImageView
@@ -86,8 +86,10 @@
         android:id="@+id/tv_tensor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/bt_add_photo"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="@id/bt_add_photo"
+        app:layout_constraintTop_toTopOf="@id/bt_add_photo"
         android:text="TESTESTES"/>
 
     <TextView
